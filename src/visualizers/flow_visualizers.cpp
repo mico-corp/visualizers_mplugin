@@ -24,6 +24,8 @@
 
 #include <mico/visualizers/flow/BlockImageVisualizer.h>
 #include <mico/visualizers/flow/BlockPointCloudVisualizer.h>
+#include <mico/visualizers/flow/BlockSceneVisualizer.h>
+#include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
 
 using namespace mico;
 using namespace flow;
@@ -34,6 +36,8 @@ extern "C" flow::PluginNodeCreator* factory(){
 
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
+    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
+    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
 
     return creator;
 }

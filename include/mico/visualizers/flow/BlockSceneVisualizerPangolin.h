@@ -20,44 +20,27 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
-#ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
-#define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
+#ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZERPANGOLIN_H_
+#define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZERPANGOLIN_H_
 
 #include <flow/Block.h>
 #include <mico/visualizers/flow/PangolinVisualizer.h>
-#include <QSpinBox>
 
 namespace mico{
 
     #ifdef MICO_HAS_PANGOLIN
-        class BlockTrajectoryVisualizerPangolin: public flow::Block {
+        class BlockSceneVisualizerPangolin: public flow::Block {
         public:
-            virtual std::string name() const override {return "Pangolin Trajectory Visualizer";}
+            virtual std::string name() const override {return "Pangolin Scene Visualizer";}
 
-            BlockTrajectoryVisualizerPangolin();
-            ~BlockTrajectoryVisualizerPangolin();
+            BlockSceneVisualizerPangolin();
+            ~BlockSceneVisualizerPangolin();
 
             virtual QWidget * customWidget() override;
-            virtual QBoxLayout * creationWidget() override;
 
         private:
-            void poseCallback(flow::DataFlow  _data, int _id);
-
-            void preparePolicy();
-
-        private:
-            unsigned nTrajs_ = 1;
-
-            QSpinBox * spinBox_;
-
-            std::vector<Eigen::Vector3f> lastPositions_;
-            std::vector<Eigen::Vector4f> colorLines_ = {{0.0f, 1.0f, 0.0f, 0.6f}, 
-                                                        {1.0f, 0.0f, 0.0f, 0.6f}, 
-                                                        {0.0f, 0.0f, 1.0f, 0.6f}, 
-                                                        {0.6f, 0.6f, 0.0f, 0.6f}, 
-                                                        {0.6f, 0.0f, 0.6f, 0.6f}, 
-                                                        {0.0f, 0.6f, 0.6f, 0.6f}};
-            std::vector<bool> isFirst_;
+            Eigen::Vector3f lastPosition_;
+            bool isFirst_ = true;
             
             PangolinVisualizer *visualizer_ = nullptr;
 

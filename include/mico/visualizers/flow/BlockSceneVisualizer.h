@@ -20,53 +20,61 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
-#ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
-#define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
+#ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZER_H_
+#define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZER_H_
 
 #include <flow/Block.h>
-#include <mico/visualizers/flow/PangolinVisualizer.h>
-#include <QSpinBox>
+
+#include <mutex>
+#include <deque>
+
+#include <mico/visualizers/flow/SceneVisualizer.h>
 
 namespace mico{
+    class BlockSceneVisualizer: public flow::Block{
+    public:
+        virtual std::string name() const override { return "Scene Visualizer"; }
 
-    #ifdef MICO_HAS_PANGOLIN
-        class BlockTrajectoryVisualizerPangolin: public flow::Block {
-        public:
-            virtual std::string name() const override {return "Pangolin Trajectory Visualizer";}
-
-            BlockTrajectoryVisualizerPangolin();
-            ~BlockTrajectoryVisualizerPangolin();
-
-            virtual QWidget * customWidget() override;
-            virtual QBoxLayout * creationWidget() override;
-
-        private:
-            void poseCallback(flow::DataFlow  _data, int _id);
-
-            void preparePolicy();
-
-        private:
-            unsigned nTrajs_ = 1;
-
-            QSpinBox * spinBox_;
-
-            std::vector<Eigen::Vector3f> lastPositions_;
-            std::vector<Eigen::Vector4f> colorLines_ = {{0.0f, 1.0f, 0.0f, 0.6f}, 
-                                                        {1.0f, 0.0f, 0.0f, 0.6f}, 
-                                                        {0.0f, 0.0f, 1.0f, 0.6f}, 
-                                                        {0.6f, 0.6f, 0.0f, 0.6f}, 
-                                                        {0.6f, 0.0f, 0.6f, 0.6f}, 
-                                                        {0.0f, 0.6f, 0.6f, 0.6f}};
-            std::vector<bool> isFirst_;
-            
-            PangolinVisualizer *visualizer_ = nullptr;
-
-        };
-
-    
-    #endif
+        BlockSceneVisualizer();
+        ~BlockSceneVisualizer();
 
 
+
+    bool configure(std::unordered_map<std::string, std::string> _params) override;
+    std::vector<std::string> parameters() override;
+
+
+    private:
+        SceneVisualizer<pcl::PointXYZRGBNormal> sceneVisualizer_;
+
+        void init();
+
+    private:
+        static bool sAlreadyExisting_;
+        bool sBelonger_;
+
+        std::thread spinnerThread_;
+        bool run_ = true;
+        bool idle_ = true;
+        bool hasBeenInitialized_ = false;
+
+
+        std::deque<Dataframe<pcl::PointXYZRGBNormal>::Ptr> queueDfs_;
+        std::mutex queueDfGuard_;
+        
+#ifdef HAS_DARKNET
+        std::deque<std::vector<std::shared_ptr<mico::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
+        std::mutex queueEntitiesGuard_;
+#endif
+        bool hasPose = false;
+        Eigen::Matrix4f lastPose_;
+        std::mutex poseGuard_;
+
+        // Parameters
+        float voxelSize_ = -1;
+        bool useOctree = false;
+        bool octreeDepth = 4;
+    };
 
 }
 

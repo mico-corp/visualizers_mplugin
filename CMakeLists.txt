@@ -1,7 +1,7 @@
 ##---------------------------------------------------------------------------------------------------------------------
-##  MICO-BASE
+##  MICO Visualizers plugin
 ##---------------------------------------------------------------------------------------------------------------------
-##  Copyright 2018 Pablo Ramon Soria (a.k.a. Bardo91) pabramsor@gmail.com
+##  Copyright 2020 Pablo Ramon Soria (a.k.a. Bardo91) pabramsor@gmail.com
 ##---------------------------------------------------------------------------------------------------------------------
 ##  Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 ##  and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -80,6 +80,12 @@ if(${PCL_FOUND})
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE ${PCL_LIBRARIES})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
+
+set(MICO_DEPS "base")
+foreach(DEP ${MICO_DEPS})
+  find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
+  target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
+endforeach()
 
 #########################################
 ######			Documentation	   ######
