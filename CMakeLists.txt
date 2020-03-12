@@ -68,18 +68,24 @@ if(${Pangolin_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "MICO_HAS_PANGOLIN")	
 endif()
 
-find_package(flow REQUIRED)
-if (${flow_FOUND})
-  target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC flow::flow)
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
-endif(${flow_FOUND})
-
 find_package(PCL QUIET REQUIRED)
 if(${PCL_FOUND})
   target_include_directories(${PLUGIN_NAME} PUBLIC ${PCL_INCLUDE_DIRS})
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE ${PCL_LIBRARIES})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
+
+find_package(flow REQUIRED)
+if (${flow_FOUND})
+  target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC flow::flow)
+  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
+endif(${flow_FOUND})
+
+set(MICO_DEPS "core")
+foreach(DEP ${MICO_DEPS})
+  find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
+  target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
+endforeach()
 
 ##################################################
 ######    Library.                        ########
