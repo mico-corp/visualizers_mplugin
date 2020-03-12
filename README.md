@@ -30,3 +30,15 @@ mkdir build ; cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release ; make -j
 sudo make install
 ```
+
+### CORE_MPLUGIN
+
+Installation from source code: 
+
+```
+git clone https://github.com/mico-corp/core_mplugin.git
+cd dvsal
+mkdir build ; cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release ; make -j
+sudo make install
+```

@@ -81,7 +81,7 @@ if (${flow_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
 endif(${flow_FOUND})
 
-set(MICO_DEPS "core")
+set(MICO_DEPS "core" "slam")
 foreach(DEP ${MICO_DEPS})
   find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
