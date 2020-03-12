@@ -22,6 +22,5 @@ install_git_repo () {
 }
 
 install_git_repo "nodeeditor" "https://github.com/mico-corp/nodeeditor.git"
-install_git_repo "flow" "https://github.com/mico-corp/flow.git"
-
-install_git_repo "Pangolin" "https://github.com/stevenlovegrove/Pangolin.git"
+install_git_repo "flow"       "https://github.com/mico-corp/flow.git"
+install_git_repo "Pangolin"   "https://github.com/stevenlovegrove/Pangolin.git"
