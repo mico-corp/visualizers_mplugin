@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------------------------------------------------
-//  mico
+//  Visualizers MICO plugin
 //---------------------------------------------------------------------------------------------------------------------
-//  Copyright 2019 Pablo Ramon Soria (a.k.a. Bardo91) pabramsor@gmail.com
+//  Copyright 2020 Pablo Ramon Soria (a.k.a. Bardo91) pabramsor@gmail.com
 //---------------------------------------------------------------------------------------------------------------------
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 //  and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,7 +19,6 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
-
 #include <flow/flow.h>
 
 #include <mico/visualizers/flow/BlockImageVisualizer.h>
@@ -29,7 +28,6 @@
 
 using namespace mico;
 using namespace flow;
-
 
 extern "C" flow::PluginNodeCreator* factory(){
     flow::PluginNodeCreator *creator = new flow::PluginNodeCreator;

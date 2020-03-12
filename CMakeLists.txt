@@ -1,5 +1,5 @@
 ##---------------------------------------------------------------------------------------------------------------------
-##  MICO Visualizers plugin
+##  Visualizers MICO plugin
 ##---------------------------------------------------------------------------------------------------------------------
 ##  Copyright 2020 Pablo Ramon Soria (a.k.a. Bardo91) pabramsor@gmail.com
 ##---------------------------------------------------------------------------------------------------------------------
@@ -42,13 +42,13 @@ target_link_libraries(${PLUGIN_NAME} PUBLIC pthread)
 
 add_library(${PROJECT_NAME}::${PLUGIN_NAME} ALIAS ${PLUGIN_NAME})
 
-##########################################
-######		Configure project		######
-##########################################
+##################################################
+######    Configure project               ########
+##################################################
 
-#########################################
-###### Loading 3rd party libraries.######
-#########################################
+##################################################
+######    Loading 3rd party libraries.    ########
+##################################################
 if( NOT CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING
        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
@@ -81,44 +81,40 @@ if(${PCL_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
 
-set(MICO_DEPS "core;slam")
-foreach(DEP ${MICO_DEPS})
-  find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
-  target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
-endforeach()
+##################################################
+######    Library.                        ########
+##################################################
+#add_definitions(-fopenmp)
 
-#########################################
-######			Documentation	   ######
-#########################################
+##################################################
+######    Documentation.                  ########
+##################################################
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-	add_custom_target(	doc_rgbd_tools
+	add_custom_target(	doc_mico_visualizers
 						${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
 						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 						COMMENT "Generating API documentation with Doxygen" VERBATIM )
 endif(DOXYGEN_FOUND)
 
 
-#########################################
-######			INSTALL 		   ######
-#########################################
-
+##################################################
+######    Installation.                   ########
+##################################################
 include(CMakePackageConfigHelpers)
 
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif() 
 
-
 install(TARGETS ${PLUGIN_NAME} EXPORT ${PLUGIN_NAME}-targets
-		COMPONENT ${PLUGIN_NAME}
-		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib
-		RUNTIME DESTINATION bin
-		INCLUDES DESTINATION include
-	  )
-
+	COMPONENT ${PLUGIN_NAME}
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	INCLUDES DESTINATION include
+)
 
 install(EXPORT ${PLUGIN_NAME}-targets
 	FILE "${PLUGIN_NAME}-targets.cmake"
@@ -127,44 +123,46 @@ install(EXPORT ${PLUGIN_NAME}-targets
 	COMPONENT ${PLUGIN_NAME}
 )
 
-# configure_file("${PLUGIN_NAME}-config.cmake.in"
-# 	"${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
-# 	@ONLY
-# )
+configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/templates/${PLUGIN_NAME}-config.cmake.in"
+	"${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
+	@ONLY
+)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
-  VERSION ${version}
-  COMPATIBILITY AnyNewerVersion
+    "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
+    VERSION ${version}
+    COMPATIBILITY AnyNewerVersion
 )
 
 install(
-  FILES
-    # "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
-    "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
-  DESTINATION lib/cmake/${PROJECT_NAME}
-  COMPONENT ${PLUGIN_NAME}
+    FILES
+        "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
+        "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
+    DESTINATION lib/cmake/${PROJECT_NAME}
+    COMPONENT ${PLUGIN_NAME}
 )
 
 # DESTINATION will be automatically prefixed by ${CMAKE_INSTALL_PREFIX}
 install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
-  COMPONENT ${PLUGIN_NAME}
-  DESTINATION ${CMAKE_INSTALL_PREFIX}
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
+    COMPONENT ${PLUGIN_NAME}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
 )
 
 # uninstall target 
 if(NOT TARGET uninstall) 
-  configure_file( 
-      "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in" 
-      "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" 
-      @ONLY) 
+    configure_file( 
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/cmake_uninstall.cmake.in" 
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" 
+        @ONLY) 
  
-  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake) 
+    add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake) 
 endif() 
 
 # FLOW INSTALL target 
 add_custom_target(flow_install
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/lib${PLUGIN_NAME}.so $ENV{HOME}/.flow/plugins/lib${PLUGIN_NAME}.so
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/lib${PLUGIN_NAME}.so 
+                                     $ENV{HOME}/.flow/plugins/lib${PLUGIN_NAME}.so
 )
