@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <mico/base/Dataframe.h>
+#include <mico/slam/Dataframe.h>
 #ifdef HAS_DARKNET
     #include <mico/dnn/map3d/Entity.h>
 #endif

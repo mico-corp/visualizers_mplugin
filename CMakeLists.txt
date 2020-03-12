@@ -81,7 +81,7 @@ if(${PCL_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
 
-set(MICO_DEPS "base")
+set(MICO_DEPS "core;slam")
 foreach(DEP ${MICO_DEPS})
   find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})

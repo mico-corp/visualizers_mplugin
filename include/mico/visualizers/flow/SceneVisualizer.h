@@ -9,8 +9,8 @@
 #include <chrono>
 #include <thread>
 
-#include <mico/base/Dataframe.h>
-// #include <mico/base/cjson/json.h>
+#include <mico/slam/Dataframe.h>
+// #include <mico/slam/cjson/json.h>
 
 #include <pcl/octree/octree_pointcloud_occupancy.h>
 
