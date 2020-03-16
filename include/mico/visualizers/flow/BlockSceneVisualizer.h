@@ -28,7 +28,7 @@
 #include <mutex>
 #include <deque>
 
-#include <mico/visualizers/flow/SceneVisualizer.h>
+#include <mico/visualizers/SceneVisualizer.h>
 
 namespace mico{
     class BlockSceneVisualizer: public flow::Block{

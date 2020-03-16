@@ -24,7 +24,7 @@
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZERPANGOLIN_H_
 
 #include <flow/Block.h>
-#include <mico/visualizers/flow/PangolinVisualizer.h>
+#include <mico/visualizers/PangolinVisualizer.h>
 
 namespace mico{
 

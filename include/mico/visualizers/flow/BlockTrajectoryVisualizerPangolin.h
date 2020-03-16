@@ -24,7 +24,7 @@
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
 
 #include <flow/Block.h>
-#include <mico/visualizers/flow/PangolinVisualizer.h>
+#include <mico/visualizers/PangolinVisualizer.h>
 #include <QSpinBox>
 
 namespace mico{
