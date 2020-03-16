@@ -28,7 +28,7 @@
 
 #include <mico/slam/Dataframe.h>
 
-#ifdef HAS_DARKNET
+#ifdef HAS_DNN
     #include <mico/dnn/map3d/Entity.h>
 #endif
 
@@ -74,10 +74,10 @@ namespace mico{
                                 }
                             );
 
-    #ifdef HAS_DARKNET
+    #ifdef HAS_DNN
         registerCallback({"Objects" }, 
                                 [&](flow::DataFlow  _data){
-                                    auto entities = _data.get<std::vector<std::shared_ptr<mico::Entity<pcl::PointXYZRGBNormal>>>>("Objects"); 
+                                    auto entities = _data.get<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>>("Objects"); 
                                     queueEntitiesGuard_.lock();
                                     queueEntities_.push_back(entities);
                                     queueEntitiesGuard_.unlock();
@@ -154,7 +154,7 @@ namespace mico{
                     sceneVisualizer_.drawDataframe(df);
                 }
 
-            #ifdef HAS_DARKNET
+            #ifdef HAS_DNN
                 while(queueEntities_.size() > 0){
                     queueEntitiesGuard_.lock();
                     auto e = queueEntities_.front();

@@ -16,7 +16,7 @@
 
 #include <pcl/filters/voxel_grid.h>
 
-#ifdef HAS_DARKNET
+#ifdef HAS_DNN
     #include <mico/dnn/map3d/Entity.h>
 #endif
 
@@ -50,8 +50,8 @@ namespace mico {
         // Check if dataframesframes have been optimized to updated them
         void checkAndRedrawCf();
 
-#ifdef HAS_DARKNET
-        void drawEntity(std::vector<std::shared_ptr<mico::Entity<PointType_>>> _entity, bool _drawPoints, bool _drawCube, float _opacity);
+#ifdef HAS_DNN
+        void drawEntity(std::vector<std::shared_ptr<dnn::Entity<PointType_>>> _entity, bool _drawPoints, bool _drawCube, float _opacity);
 #endif
         // Draw every word optimized
         bool draw3DMatches(pcl::PointCloud<PointType_> _pc1, pcl::PointCloud<PointType_> _pc2);

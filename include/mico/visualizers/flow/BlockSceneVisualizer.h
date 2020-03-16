@@ -62,8 +62,8 @@ namespace mico{
         std::deque<Dataframe<pcl::PointXYZRGBNormal>::Ptr> queueDfs_;
         std::mutex queueDfGuard_;
         
-#ifdef HAS_DARKNET
-        std::deque<std::vector<std::shared_ptr<mico::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
+#ifdef HAS_DNN
+        std::deque<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
         std::mutex queueEntitiesGuard_;
 #endif
         bool hasPose = false;
