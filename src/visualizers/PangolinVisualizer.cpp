@@ -20,7 +20,7 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
-#include <mico/visualizers/flow/PangolinVisualizer.h>
+#include <mico/visualizers/PangolinVisualizer.h>
 
 #include <pangolin/pangolin.h>
 #include <pangolin/scene/axis.h>
