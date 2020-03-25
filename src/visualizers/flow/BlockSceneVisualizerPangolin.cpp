@@ -32,6 +32,7 @@
 #include <mico/slam/Dataframe.h>
 #ifdef HAS_DNN
     #include <mico/dnn/map3d/Entity.h>
+    #include <opencv2/core/types.hpp>
 #endif
 
 namespace mico{
@@ -106,22 +107,26 @@ namespace mico{
                                         auto vv7 = ePose * v7;
                                         auto vv8 = ePose * v8;
 
+                                        // get box color
+                                        cv::Scalar eColor = e->color();
+                                        Eigen::Vector4f color = {eColor(0), eColor(1), eColor(2), 0.8};
+
                                         // draw cube
                                         // up face
-                                        visualizer_->addLine({vv1(0),vv1(1),vv1(2)}, {vv2(0),vv2(1),vv2(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv2(0),vv2(1),vv2(2)}, {vv4(0),vv4(1),vv4(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv4(0),vv4(1),vv4(2)}, {vv3(0),vv3(1),vv3(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv3(0),vv3(1),vv3(2)}, {vv1(0),vv1(1),vv1(2)}, {1,0,0,0.6});
+                                        visualizer_->addLine({vv1(0),vv1(1),vv1(2)}, {vv2(0),vv2(1),vv2(2)}, color);
+                                        visualizer_->addLine({vv2(0),vv2(1),vv2(2)}, {vv4(0),vv4(1),vv4(2)}, color);
+                                        visualizer_->addLine({vv4(0),vv4(1),vv4(2)}, {vv3(0),vv3(1),vv3(2)}, color);
+                                        visualizer_->addLine({vv3(0),vv3(1),vv3(2)}, {vv1(0),vv1(1),vv1(2)}, color);
                                         // down face
-                                        visualizer_->addLine({vv5(0),vv5(1),vv5(2)}, {vv6(0),vv6(1),vv6(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv6(0),vv6(1),vv6(2)}, {vv8(0),vv8(1),vv8(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv8(0),vv8(1),vv8(2)}, {vv7(0),vv7(1),vv7(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv7(0),vv7(1),vv7(2)}, {vv5(0),vv5(1),vv5(2)}, {1,0,0,0.6});
+                                        visualizer_->addLine({vv5(0),vv5(1),vv5(2)}, {vv6(0),vv6(1),vv6(2)}, color);
+                                        visualizer_->addLine({vv6(0),vv6(1),vv6(2)}, {vv8(0),vv8(1),vv8(2)}, color);
+                                        visualizer_->addLine({vv8(0),vv8(1),vv8(2)}, {vv7(0),vv7(1),vv7(2)}, color);
+                                        visualizer_->addLine({vv7(0),vv7(1),vv7(2)}, {vv5(0),vv5(1),vv5(2)}, color);
                                         // the other lines
-                                        visualizer_->addLine({vv1(0),vv1(1),vv1(2)}, {vv5(0),vv5(1),vv5(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv3(0),vv3(1),vv3(2)}, {vv2(0),vv2(1),vv2(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv2(0),vv2(1),vv2(2)}, {vv6(0),vv6(1),vv6(2)}, {1,0,0,0.6});
-                                        visualizer_->addLine({vv4(0),vv4(1),vv4(2)}, {vv8(0),vv8(1),vv8(2)}, {1,0,0,0.6});
+                                        visualizer_->addLine({vv1(0),vv1(1),vv1(2)}, {vv5(0),vv5(1),vv5(2)}, color);
+                                        visualizer_->addLine({vv3(0),vv3(1),vv3(2)}, {vv7(0),vv7(1),vv7(2)}, color);
+                                        visualizer_->addLine({vv2(0),vv2(1),vv2(2)}, {vv6(0),vv6(1),vv6(2)}, color);
+                                        visualizer_->addLine({vv4(0),vv4(1),vv4(2)}, {vv8(0),vv8(1),vv8(2)}, color);
                                     }
                                 }
                             );
