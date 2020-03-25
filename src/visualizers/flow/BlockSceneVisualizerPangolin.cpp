@@ -110,7 +110,7 @@ namespace mico{
                                         // get box color
                                         cv::Scalar eColor = e->color();
                                         Eigen::Vector4f color = {eColor(0), eColor(1), eColor(2), 0.8};
-
+                                        visualizer_->addText( e->name(),{vv1(0),vv1(1),vv1(2)});
                                         // draw cube
                                         // up face
                                         visualizer_->addLine({vv1(0),vv1(1),vv1(2)}, {vv2(0),vv2(1),vv2(2)}, color);

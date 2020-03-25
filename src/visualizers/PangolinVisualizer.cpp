@@ -25,6 +25,8 @@
 #include <pangolin/pangolin.h>
 #include <pangolin/scene/axis.h>
 #include <pangolin/scene/scenehandler.h>
+#include <pangolin/gl/gltext.h>
+#include <pangolin/gl/glfont.h>
 #include <unistd.h>
 
 namespace mico{
@@ -72,6 +74,13 @@ namespace mico{
             cloudsToDraw_.push_back(_cloud);
             renderGuard_.unlock();
         }
+
+        void PangolinVisualizer::addText(const std::string &_text, const Eigen::Vector3f &_position){
+            renderGuard_.lock();
+            textToDraw_.push_back(_text);
+            textPosition_.push_back(_position);
+            renderGuard_.unlock();
+        }
         
         void PangolinVisualizer::clearPointClouds(){
             renderGuard_.lock();
@@ -111,6 +120,10 @@ namespace mico{
                 tree.Render();
             });
 
+            // Ensure that blending is enabled for rendering text.
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
             while(running_ && !pangolin::ShouldQuit() ) {
 
                 // Clear screen and activate view to render into
@@ -119,7 +132,8 @@ namespace mico{
                 drawCurrentPose();
                 drawLines();
                 drawPointClouds();
-                
+                drawText();
+
                 // Swap frames and Process Events
                 pangolin::FinishFrame();
                 usleep(1000);
@@ -197,6 +211,17 @@ namespace mico{
                 }
                 glEnd();
             // }
+        }
+
+        void PangolinVisualizer::drawText(){
+            renderGuard_.lock();
+            auto text = textToDraw_;
+            auto textPosition = textPosition_;
+            renderGuard_.unlock();
+            for(unsigned j = 0; j < text.size(); j++){
+                pangolin::GlFont::I().Text(text[j].c_str()).Draw(textPosition[j](0),textPosition[j](1),textPosition[j](2));
+            }
+
         }
 
     #endif
