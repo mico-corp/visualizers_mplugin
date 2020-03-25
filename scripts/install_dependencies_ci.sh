@@ -30,7 +30,7 @@ sudo apt-get install -y libomp-dev libsuitesparse-dev libcholmod3
 
 install_git_repo "DBoW2"         "https://github.com/dorian3d/DBoW2.git"
 install_git_repo "DLoopDetector" "https://github.com/dorian3d/DLoopDetector.git"
-install_git_repo "g2o"           "https://github.com/dorian3d/g2o.git"
+install_git_repo "g2o"           "https://github.com/RainerKuemmerle/g2o.git"
 install_git_repo "slam_mplugin"  "https://github.com/mico-corp/slam_mplugin.git"
 
 install_git_repo "Pangolin"     "https://github.com/stevenlovegrove/Pangolin.git"
