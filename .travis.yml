@@ -25,6 +25,7 @@ matrix:
             - libpcl-dev
             - libgl1-mesa-dev
             - libglew-dev
+	    - libxkbcommon-dev
 
 
 before_install:
