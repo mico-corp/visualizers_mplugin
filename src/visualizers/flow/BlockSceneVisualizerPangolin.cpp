@@ -85,6 +85,10 @@ namespace mico{
                                         Eigen::Matrix4f dfPose = e->dfpose(firstDf);
                                         ePose = dfPose * ePose;
 
+                                        // feature cloud
+                                        pcl::transformPointCloudWithNormals(*e->featureCloud(firstDf), cloud, dfPose);
+                                        visualizer_->addPointCloud(cloud.makeShared());
+                                        // dense cloud
                                         pcl::transformPointCloudWithNormals(*e->cloud(firstDf), cloud, dfPose);
                                         visualizer_->addPointCloud(cloud.makeShared());
 
