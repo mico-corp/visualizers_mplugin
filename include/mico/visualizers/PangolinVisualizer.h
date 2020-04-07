@@ -53,6 +53,8 @@ namespace mico{
 
             void addPointCloud(const pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr &_cloud);
 
+            void addText(const std::string &_text, const Eigen::Vector3f &_position);
+
             void clearPointClouds();
             void clearLines();
 
@@ -61,7 +63,7 @@ namespace mico{
             void drawLines();
             void drawPointClouds();
             void drawCurrentPose();
-
+            void drawText();
         private:
             bool running_ = true;
             std::string windowName_ = "";
@@ -72,6 +74,10 @@ namespace mico{
             std::vector<Eigen::Vector4f> colorLines_;
 
             std::vector<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr> cloudsToDraw_;
+
+            std::vector<std::string> textToDraw_;
+            std::vector<Eigen::Vector3f> textPosition_;
+
             pcl::PointCloud<pcl::PointXYZRGBNormal> absoluteCloud_;
             pcl::VoxelGrid<pcl::PointXYZRGBNormal> voxelFilter_;
 

@@ -23,7 +23,7 @@
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAYECTORYVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAYECTORYVISUALIZER_H_
 
-#include <mico/visualizers/flow/VtkVisualizer3D.h>
+#include <mico/visualizers/VtkVisualizer3D.h>
 
 namespace mico{
 
