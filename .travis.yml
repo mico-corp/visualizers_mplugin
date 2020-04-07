@@ -27,6 +27,9 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}" 
+  - cd $TRAVIS_BUILD_DIR
+  - git clone https://github.com/stevenlovegrove/Pangolin
+  - cd Pangolin && mkdir build && cd build && cmake .. && make && sudo make install
 
 install:
   - bash ./scripts/install_dependencies_ci.sh
