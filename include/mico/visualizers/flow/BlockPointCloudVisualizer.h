@@ -44,7 +44,7 @@
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkCommand.h>
 
-#include <mico/visualizers/flow/VtkVisualizer3D.h>
+#include <mico/visualizers/VtkVisualizer3D.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
