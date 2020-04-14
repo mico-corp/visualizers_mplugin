@@ -98,6 +98,7 @@ namespace mico {
 
         std::map<int,bool> mExistingDf;
         std::map<int,bool> mExistingEntity;
+        std::map<int,bool> mExistingEntityCameras;
         std::map<int,int> mNodeCovisibilityCheckSum;
 
         bool mUseVoxel = false;

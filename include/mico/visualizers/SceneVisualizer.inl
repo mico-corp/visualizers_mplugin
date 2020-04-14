@@ -190,13 +190,31 @@ namespace mico {
             int id = e->id();
             int firstDf = e->dfs()[0];
 
-            if(mExistingEntity.find(id) != mExistingDf.end()){
+            if(mExistingEntity.find(id) != mExistingEntity.end()){
                 mViewer->removeCoordinateSystem("e_cs_" + std::to_string(id));
                 mViewer->removeText3D("e_text_" + std::to_string(id));
                 if(mUseOctree)
                     mViewer->removePointCloud("octree");
                 else
                     mViewer->removePointCloud("e_cloud_" + std::to_string(id));
+
+                // remove cameras
+                for(auto df: e->dfMap()){
+                    if(mExistingEntityCameras.find(df.first) != mExistingEntityCameras.end()){
+                        mViewer->removeCoordinateSystem("e_df_" + std::to_string(df.first));
+                        mViewer->removeText3D("e_df_text_" + std::to_string(df.first));
+                    }
+                }
+
+            }
+
+            // draw cameras 
+            for(auto df: e->dfMap()){
+                auto pose = df.second->pose();
+                mViewer->addCoordinateSystem(0.1, Eigen::Affine3f(pose), "e_df_" + std::to_string(df.first));
+                pcl::PointXYZ position(pose(0, 3), pose(1, 3), pose(2, 3));
+                mViewer->addText3D( "Df: " + std::to_string(df.first), position, 0.02, 1,0,0, "e_df_text_" + std::to_string(df.first));
+                mExistingEntityCameras[df.first] = true;
             }
 
             Eigen::Matrix4f ePose = e->pose(firstDf);
@@ -204,10 +222,14 @@ namespace mico {
             
             ePose =  dfPose * ePose;
 
+            //draw entity pose
             mViewer->addCoordinateSystem(0.1, Eigen::Affine3f(ePose), "e_cs_" + std::to_string(id));
             
             pcl::PointXYZ position(ePose(0, 3), ePose(1, 3), ePose(2, 3));
-            mViewer->addText3D(std::to_string(id), position, 0.03, 1,0,0, "e_text_" + std::to_string(id));
+            
+            cv::Scalar color = e->color();
+            
+            mViewer->addText3D( std::to_string(id) + " : " + e->name(), position, 0.08, color(0)/255.0f ,color(1)/255.0f ,color(2)/255.0f , "e_text_" + std::to_string(id));
 
             // Draw cloud
             if (e->cloud(firstDf) != nullptr && _drawPoints){ 
@@ -259,10 +281,11 @@ namespace mico {
                 mViewer->addCube(bboxTransform, bboxQuaternion, bc[0] - bc[1], bc[2] - bc[3], bc[4] - bc[5], "e_box_" + std::to_string(id), 0);
                 mViewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, _opacity ,"e_box_" + std::to_string(id));
 
-                cv::Scalar color = e->color();
+                
                 mViewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR , color(0)/255.0f, color(1)/255.0f, color(2)/255.0f ,"e_box_" + std::to_string(id));
             }
 
+            mExistingEntity[e->id()] = true;
             mViewer->spinOnce(10, true);
         }
     }
