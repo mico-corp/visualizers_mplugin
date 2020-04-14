@@ -258,6 +258,9 @@ namespace mico {
                 const std::vector<float> bc = e->boundingCube(firstDf);
                 mViewer->addCube(bboxTransform, bboxQuaternion, bc[0] - bc[1], bc[2] - bc[3], bc[4] - bc[5], "e_box_" + std::to_string(id), 0);
                 mViewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, _opacity ,"e_box_" + std::to_string(id));
+
+                cv::Scalar color = e->color();
+                mViewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR , color(0)/255.0f, color(1)/255.0f, color(2)/255.0f ,"e_box_" + std::to_string(id));
             }
 
             mViewer->spinOnce(10, true);

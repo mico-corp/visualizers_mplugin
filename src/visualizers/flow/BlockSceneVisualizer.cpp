@@ -51,7 +51,8 @@ namespace mico{
         createPolicy({
             {"Camera Pose", "mat44"},
             {"Dataframe", "dataframe"},
-            {"Objects", "v_entity"}
+            {"Entities", "v_entity"},
+            {"Update Entities", "v_entity"}
         });
 
         registerCallback({ "Camera Pose" }, 
@@ -75,9 +76,19 @@ namespace mico{
                             );
 
     #ifdef HAS_DNN
-        registerCallback({"Objects" }, 
+        registerCallback({"Entities" }, 
                                 [&](flow::DataFlow  _data){
-                                    auto entities = _data.get<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>>("Objects"); 
+                                    auto entities = _data.get<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>>("Entities"); 
+                                    queueEntitiesGuard_.lock();
+                                    queueEntities_.push_back(entities);
+                                    queueEntitiesGuard_.unlock();
+                                    idle_ = true;
+                                }
+                            );
+
+        registerCallback({"Update Entities" }, 
+                                [&](flow::DataFlow  _data){
+                                    auto entities = _data.get<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>>("Update Entities"); 
                                     queueEntitiesGuard_.lock();
                                     queueEntities_.push_back(entities);
                                     queueEntitiesGuard_.unlock();
@@ -160,7 +171,7 @@ namespace mico{
                     auto e = queueEntities_.front();
                     queueEntities_.pop_front();
                     queueEntitiesGuard_.unlock();
-                    sceneVisualizer_.drawEntity(e, true, true, 0.2);
+                    sceneVisualizer_.drawEntity(e, true, true, 0.05);
                 }
             #endif
                 // Check optimizations.
