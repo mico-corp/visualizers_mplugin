@@ -23,7 +23,8 @@ cmake_minimum_required (VERSION 3.12 FATAL_ERROR)
 project(mico VERSION 1.0 LANGUAGES C CXX)
 set(PLUGIN_NAME ${PROJECT_NAME}-visualizers)
 
-set(USE_DNN OFF)
+OPTION(USE_DNN OFF)
+OPTION(USE_SLAM OFF)
 
 ##################################################
 ###### Create project and configure ALIAS ########
@@ -83,12 +84,16 @@ if (${flow_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
 endif(${flow_FOUND})
 
-if(${USE_DNN})
-  set(MICO_DEPS "core" "slam" "dnn")
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_DNN)
-else()
-  set(MICO_DEPS "core" "slam")
+set(MICO_DEPS "core")
+if(${USE_SLAM})
+  set(MICO_DEPS "${MICO_DEPS}" "slam")
 endif()
+
+if(${USE_DNN})
+  set(MICO_DEPS "${MICO_DEPS}" "dnn")
+  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_DNN)
+endif()
+
 foreach(DEP ${MICO_DEPS})
   find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
