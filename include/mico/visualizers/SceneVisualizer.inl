@@ -180,7 +180,7 @@ namespace mico {
     }
 
     //---------------------------------------------------------------------------------------------------------------------
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
     template <typename PointType_>
     inline void SceneVisualizer<PointType_>::drawEntity(std::vector<std::shared_ptr<dnn::Entity<PointType_>>> _entity, bool _drawPoints, bool _drawCube, float _opacity){
         if(!mViewer)

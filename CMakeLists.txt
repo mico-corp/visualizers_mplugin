@@ -23,8 +23,16 @@ cmake_minimum_required (VERSION 3.12 FATAL_ERROR)
 project(mico VERSION 1.0 LANGUAGES C CXX)
 set(PLUGIN_NAME ${PROJECT_NAME}-visualizers)
 
-OPTION(USE_DNN OFF)
-OPTION(USE_SLAM OFF)
+set(HAS_MICO_SLAM FALSE)
+set(HAS_MICO_DNN FALSE)
+
+if (TARGET mico-slam)
+  set(HAS_MICO_SLAM TRUE)
+endif()
+
+if (TARGET mico-dnn)
+  set(HAS_MICO_DNN TRUE)
+endif()
 
 ##################################################
 ###### Create project and configure ALIAS ########
@@ -78,24 +86,33 @@ if(${PCL_FOUND})
   target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
 
-find_package(flow REQUIRED)
-if (${flow_FOUND})
-  target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC flow::flow)
+if(NOT ${BUNDLE_COMPILATION})
+  find_package(flow REQUIRED)
+  if(${flow_FOUND})
+    target_link_libraries(${PLUGIN_NAME}  LINK_PUBLIC flow::flow)
+    target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
+  endif()
+else()
+  set(flow_FOUND TRUE)
+  target_link_libraries(${PLUGIN_NAME}  LINK_PUBLIC flow)
   target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
-endif(${flow_FOUND})
-
-set(MICO_DEPS "core")
-if(${USE_SLAM})
-  set(MICO_DEPS "${MICO_DEPS}" "slam")
 endif()
 
-if(${USE_DNN})
+set(MICO_DEPS "core")
+if(${HAS_MICO_SLAM})
+  set(MICO_DEPS "${MICO_DEPS}" "slam")
+  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_MICO_SLAM)
+endif()
+
+if(${HAS_MICO_DNN})
   set(MICO_DEPS "${MICO_DEPS}" "dnn")
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_DNN)
+  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_MICO_DNN)
 endif()
 
 foreach(DEP ${MICO_DEPS})
-  find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
+  if(NOT ${BUNDLE_COMPILATION})
+    find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
+  endif()
   target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
 endforeach()
 
@@ -179,13 +196,11 @@ if(NOT TARGET uninstall)
     add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake) 
 endif() 
 
-# FLOW INSTALL target
-if(NOT TARGET flow_install) 
-	add_custom_target(flow_install
-	    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/lib${PLUGIN_NAME}.so 
-	                                     $ENV{HOME}/.flow/plugins/lib${PLUGIN_NAME}.so
-	)
-endif()
+# FLOW INSTALL target 
+add_custom_target(flow_install
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/lib${PLUGIN_NAME}.so 
+                                     $ENV{HOME}/.flow/plugins/lib${PLUGIN_NAME}.so
+)
 
 
 ##################################################

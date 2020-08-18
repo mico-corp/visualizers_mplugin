@@ -1,6 +1,8 @@
+#ifdef HAS_MICO_SLAM
 
 #ifndef SLAMMARKI_SCENEVISUALIZER_H_
 #define SLAMMARKI_SCENEVISUALIZER_H_
+
 
 #include <opencv2/opencv.hpp>
 #include <pcl/io/pcd_io.h>
@@ -16,7 +18,7 @@
 
 #include <pcl/filters/voxel_grid.h>
 
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
     #include <mico/dnn/map3d/Entity.h>
 #endif
 
@@ -50,7 +52,7 @@ namespace mico {
         // Check if dataframesframes have been optimized to updated them
         void checkAndRedrawCf();
 
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
         void drawEntity(std::vector<std::shared_ptr<dnn::Entity<PointType_>>> _entity, bool _drawPoints, bool _drawCube, float _opacity);
 #endif
         // Draw every word optimized
@@ -108,5 +110,7 @@ namespace mico {
 } // namespace mico
 
 #include "SceneVisualizer.inl"
+
+#endif //HAS_MICO_SLAM
 
 #endif // SLAMMARKI_VISUALIZER_H_
