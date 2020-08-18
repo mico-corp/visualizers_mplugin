@@ -197,10 +197,12 @@ if(NOT TARGET uninstall)
 endif() 
 
 # FLOW INSTALL target 
-add_custom_target(flow_install
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/lib${PLUGIN_NAME}.so 
-                                     $ENV{HOME}/.flow/plugins/lib${PLUGIN_NAME}.so
+add_custom_target(flow_install_${PLUGIN_NAME} ALL
+                COMMAND ${CMAKE_COMMAND} -E copy 	${CMAKE_CURRENT_BINARY_DIR}/lib${PLUGIN_NAME}.so 
+                ${CMAKE_BINARY_DIR}/plugins/lib${PLUGIN_NAME}.so
 )
+add_dependencies(flow_install_${PLUGIN_NAME} ${PLUGIN_NAME})
+
 
 
 ##################################################
