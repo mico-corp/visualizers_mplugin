@@ -20,6 +20,7 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
+#ifdef HAS_MICO_SLAM
 
 #include <mico/visualizers/flow/BlockSceneVisualizer.h>
 #include <flow/Policy.h>
@@ -28,7 +29,7 @@
 
 #include <mico/slam/Dataframe.h>
 
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
     #include <mico/dnn/map3d/Entity.h>
 #endif
 
@@ -75,7 +76,7 @@ namespace mico{
                                 }
                             );
 
-    #ifdef HAS_DNN
+    #ifdef HAS_MICO_DNN
         registerCallback({"Entities" }, 
                                 [&](flow::DataFlow  _data){
                                     auto entities = _data.get<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>>("Entities"); 
@@ -165,7 +166,7 @@ namespace mico{
                     sceneVisualizer_.drawDataframe(df);
                 }
 
-            #ifdef HAS_DNN
+            #ifdef HAS_MICO_DNN
                 while(queueEntities_.size() > 0){
                     queueEntitiesGuard_.lock();
                     auto e = queueEntities_.front();
@@ -187,3 +188,6 @@ namespace mico{
     }
 
 }
+
+
+#endif

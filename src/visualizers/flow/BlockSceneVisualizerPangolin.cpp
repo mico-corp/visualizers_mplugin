@@ -19,6 +19,8 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef HAS_MICO_SLAM
+
 #include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
 
 #include <QDialog>
@@ -30,7 +32,7 @@
 #include <QPushButton>
 
 #include <mico/slam/Dataframe.h>
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
     #include <mico/dnn/map3d/Entity.h>
     #include <opencv2/core/types.hpp>
 #endif
@@ -70,7 +72,7 @@ namespace mico{
                                     }
                                 }
                             );
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
             registerCallback({ "Entities" }, 
                                 [&](flow::DataFlow  _data){
                                     if(!visualizer_){
@@ -174,3 +176,4 @@ namespace mico{
     #endif
 }
 
+#endif

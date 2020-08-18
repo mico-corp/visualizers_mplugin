@@ -33,9 +33,11 @@ extern "C" flow::PluginNodeCreator* factory(){
     flow::PluginNodeCreator *creator = new flow::PluginNodeCreator;
 
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
-
+    #ifdef HAS_MICO_SLAM
+        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
+        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
+        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
+    #endif
+    
     return creator;
 }

@@ -19,9 +19,11 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef HAS_MICO_SLAM
 
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKSCENEVISUALIZER_H_
+
 
 #include <flow/Block.h>
 
@@ -62,7 +64,7 @@ namespace mico{
         std::deque<Dataframe<pcl::PointXYZRGBNormal>::Ptr> queueDfs_;
         std::mutex queueDfGuard_;
         
-#ifdef HAS_DNN
+#ifdef HAS_MICO_DNN
         std::deque<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
         std::mutex queueEntitiesGuard_;
 #endif
@@ -77,5 +79,7 @@ namespace mico{
     };
 
 }
+
+#endif
 
 #endif
