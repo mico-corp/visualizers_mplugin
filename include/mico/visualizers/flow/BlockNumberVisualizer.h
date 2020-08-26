@@ -19,27 +19,36 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
-#include <flow/flow.h>
+#ifndef MICO_FLOW_STREAMERS_BLOCKS_BLOCKNUMBERVISUALIZER_H_
+#define MICO_FLOW_STREAMERS_BLOCKS_BLOCKNUMBERVISUALIZER_H_
 
-#include <mico/visualizers/flow/BlockImageVisualizer.h>
-#include <mico/visualizers/flow/BlockNumberVisualizer.h>
-#include <mico/visualizers/flow/BlockPointCloudVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
+#include <flow/Block.h>
 
-using namespace mico;
-using namespace flow;
+class QLabel;
 
-extern "C" flow::PluginNodeCreator* factory(){
-    flow::PluginNodeCreator *creator = new flow::PluginNodeCreator;
+namespace mico
+{
 
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockNumberVisualizer > >(); }, "Visualizers");
-    #ifdef HAS_MICO_SLAM
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
-    #endif
-    
-    return creator;
-}
+    class BlockNumberVisualizer : public flow::Block
+    {
+    public:
+        virtual std::string name() const override { return "Number Visualizer"; }
+
+        BlockNumberVisualizer();
+        ~BlockNumberVisualizer();
+
+        std::string description() const override { return "Simple number visualizer block.        \n"
+                                                          "   - Inputs: Number to be displayed    \n"; };
+
+
+        QWidget * customWidget();
+
+    private:
+        float number_ = 0;
+
+        QLabel *textDisplay_;
+    };
+
+} // namespace mico
+
+#endif

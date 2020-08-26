@@ -19,27 +19,37 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
-#include <flow/flow.h>
 
-#include <mico/visualizers/flow/BlockImageVisualizer.h>
+
 #include <mico/visualizers/flow/BlockNumberVisualizer.h>
-#include <mico/visualizers/flow/BlockPointCloudVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
 
-using namespace mico;
-using namespace flow;
+#include <flow/Policy.h>
 
-extern "C" flow::PluginNodeCreator* factory(){
-    flow::PluginNodeCreator *creator = new flow::PluginNodeCreator;
+#include <QLabel>
+#include <QTimer>
 
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockNumberVisualizer > >(); }, "Visualizers");
-    #ifdef HAS_MICO_SLAM
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
-    #endif
-    
-    return creator;
+namespace mico{
+
+    BlockNumberVisualizer::BlockNumberVisualizer(){
+        textDisplay_ = new QLabel("0.000000");
+
+        createPolicy({  {"Number", "float"} });
+
+        registerCallback({"Number"}, 
+                                [&](flow::DataFlow  _data){
+                                    number_ = _data.get<float>("Number");
+                                    textDisplay_->setText(std::to_string(number_).c_str());
+                                }
+                            );
+    }
+
+
+    QWidget * BlockNumberVisualizer::customWidget(){
+        return textDisplay_;
+    }
+
+    BlockNumberVisualizer::~BlockNumberVisualizer(){
+        delete textDisplay_;
+    }
+
 }
