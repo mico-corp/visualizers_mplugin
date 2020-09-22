@@ -132,8 +132,11 @@ namespace mico{
         return true;
     }
 
-    std::vector<std::string> BlockSceneVisualizer::parameters() {
-        return {"voxel_size", "use_octree", "octree_depth"};
+    std::vector<std::pair<std::string, flow::Block::eParameterType>>  BlockSceneVisualizer::parameters() {
+        return {    {"voxel_size", flow::Block::eParameterType::DECIMAL}, 
+                    {"use_octree", flow::Block::eParameterType::BOOLEAN},
+                    {"octree_depth", flow::Block::eParameterType::INTEGER}
+                    };
     }
 
     void BlockSceneVisualizer::init(){
