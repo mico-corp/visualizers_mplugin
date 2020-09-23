@@ -38,9 +38,15 @@ namespace mico{
         registerCallback({"Number"}, 
                                 [&](flow::DataFlow  _data){
                                     number_ = _data.get<float>("Number");
-                                    textDisplay_->setText(std::to_string(number_).c_str());
+                                    // textDisplay_->setText(std::to_string(number_).c_str());
                                 }
                             );
+
+        refreshTimer_ = new QTimer();
+        QObject::connect(refreshTimer_, &QTimer::timeout, [&](){
+            textDisplay_->setText(std::to_string(number_).c_str());
+        });
+        refreshTimer_->start(30);
     }
 
 
@@ -50,6 +56,8 @@ namespace mico{
 
     BlockNumberVisualizer::~BlockNumberVisualizer(){
         delete textDisplay_;
+        refreshTimer_->stop();
+        delete refreshTimer_;
     }
 
 }

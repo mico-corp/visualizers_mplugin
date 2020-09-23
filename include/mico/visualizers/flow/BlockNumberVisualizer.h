@@ -25,6 +25,7 @@
 #include <flow/Block.h>
 
 class QLabel;
+class QTimer;
 
 namespace mico
 {
@@ -47,6 +48,7 @@ namespace mico
         float number_ = 0;
 
         QLabel *textDisplay_;
+        QTimer *refreshTimer_;
     };
 
 } // namespace mico
