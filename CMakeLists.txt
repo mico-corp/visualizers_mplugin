@@ -72,7 +72,7 @@ target_compile_options(${PLUGIN_NAME} PUBLIC "-Wall")
 
 target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC GLEW)
 
-find_package(Pangolin)
+find_package(Pangolin REQUIRED)
 if(${Pangolin_FOUND})
   target_include_directories(${PLUGIN_NAME} PUBLIC ${Pangolin_INCLUDE_DIRS})
   target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC ${Pangolin_LIBRARIES})
