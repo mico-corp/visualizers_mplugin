@@ -41,6 +41,7 @@ endif()
 file(GLOB_RECURSE MICO_VISUALIZERS_SOURCE_FILES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE MICO_VISUALIZERS_HEADER_FILES "include/*.h" "include/*.inl")
  
+SET(MICO_MODULES ${MICO_MODULES} visualizers PARENT_SCOPE)
 add_library(${PLUGIN_NAME} SHARED ${MICO_VISUALIZERS_HEADER_FILES} ${MICO_VISUALIZERS_SOURCE_FILES})
 target_compile_features(${PLUGIN_NAME} PUBLIC cxx_std_17)
 target_include_directories(${PLUGIN_NAME}
