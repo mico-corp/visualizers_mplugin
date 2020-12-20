@@ -19,6 +19,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef MICO_HAS_PANGOLIN
 
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAJECTORYVISUALIZERPANGOLIN_H_
@@ -29,7 +30,6 @@
 
 namespace mico{
 
-    #ifdef MICO_HAS_PANGOLIN
         class BlockTrajectoryVisualizerPangolin: public flow::Block {
         public:
             virtual std::string name() const override {return "Pangolin Trajectory Visualizer";}
@@ -64,10 +64,10 @@ namespace mico{
         };
 
     
-    #endif
 
 
 
 }
 
+#endif
 #endif

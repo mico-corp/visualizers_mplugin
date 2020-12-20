@@ -19,6 +19,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef MICO_HAS_PANGOLIN
 #include <mico/visualizers/flow/BlockTrajectoryVisualizerPangolin.h>
 
 #include <QDialog>
@@ -28,7 +29,6 @@
 #include <QPushButton>
 
 namespace mico{
-    #ifdef MICO_HAS_PANGOLIN
 
 
         BlockTrajectoryVisualizerPangolin::BlockTrajectoryVisualizerPangolin(){
@@ -117,6 +117,7 @@ namespace mico{
         }
 
 
-    #endif
 }
 
+
+#endif

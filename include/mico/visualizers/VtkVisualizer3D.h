@@ -19,6 +19,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef HAS_MICO_SLAM
 
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_VTKVISUALIZER3D_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_VTKVISUALIZER3D_H_
@@ -95,5 +96,7 @@ namespace mico{
     };
 
 }
+
+#endif
 
 #endif

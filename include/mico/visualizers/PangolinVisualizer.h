@@ -19,6 +19,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef MICO_HAS_PANGOLIN
 
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_PANGOLINVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_PANGOLINVISUALIZER_H_
@@ -40,7 +41,6 @@
 
 namespace mico{
 
-    #ifdef MICO_HAS_PANGOLIN
         class PangolinVisualizer {
         public:
             PangolinVisualizer();
@@ -85,8 +85,8 @@ namespace mico{
 
             static int sWinId;
         };
-    #endif
 
 }
 
+#endif
 #endif

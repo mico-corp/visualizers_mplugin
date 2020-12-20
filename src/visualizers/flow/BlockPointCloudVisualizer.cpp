@@ -20,6 +20,7 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
+#ifdef HAS_MICO_SLAM
 
 #include <mico/visualizers/flow/BlockPointCloudVisualizer.h>
 #include <flow/Policy.h>
@@ -126,3 +127,6 @@ namespace mico{
         actorGuard_.unlock();
     }
 }
+
+
+#endif

@@ -40,85 +40,51 @@ endif()
 
 file(GLOB_RECURSE MICO_VISUALIZERS_SOURCE_FILES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE MICO_VISUALIZERS_HEADER_FILES "include/*.h" "include/*.inl")
- 
-SET(MICO_MODULES ${MICO_MODULES} visualizers PARENT_SCOPE)
-add_library(${PLUGIN_NAME} SHARED ${MICO_VISUALIZERS_HEADER_FILES} ${MICO_VISUALIZERS_SOURCE_FILES})
-target_compile_features(${PLUGIN_NAME} PUBLIC cxx_std_17)
-target_include_directories(${PLUGIN_NAME}
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
 
-add_library(${PROJECT_NAME}::${PLUGIN_NAME} ALIAS ${PLUGIN_NAME})
+
 
 ##################################################
-######    Configure project               ########
+###### Create project and configure ALIAS ########
 ##################################################
+set(MICO_DEPS "core")
+set(EXTRA_DEFINITIONS "")
+if(${HAS_MICO_SLAM})
+  set(MICO_DEPS ${MICO_DEPS} slam)
+  set(EXTRA_DEFINITIONS ${EXTRA_DEFINITIONS} HAS_MICO_SLAM)
+endif()
+
+if(${HAS_MICO_DNN})
+  set(MICO_DEPS ${MICO_DEPS dnn)
+  set(EXTRA_DEFINITIONS ${EXTRA_DEFINITIONS} HAS_MICO_DNN)
+endif()
+
+SET(MICO_MODULES ${MICO_MODULES} math PARENT_SCOPE)
+add_mplugin(    PLUGIN_NAME ${PLUGIN_NAME} 
+                PLUGIN_SOURCES ${MICO_VISUALIZERS_SOURCE_FILES}
+                PLUGIN_HEADERS  ${MICO_VISUALIZERS_HEADER_FILES} 
+                MICO_DEPS ${MICO_DEPS})
+
+
+mplugin_compile_definition(${PLUGIN_NAME} "${EXTRA_DEFINITIONS}")
 
 ##################################################
 ######    Loading 3rd party libraries.    ########
 ##################################################
-if( NOT CMAKE_BUILD_TYPE )
-  set( CMAKE_BUILD_TYPE Release CACHE STRING
-       "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-       FORCE )
-endif()
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" ${CMAKE_MODULE_PATH})
-
-target_compile_options(${PLUGIN_NAME} PUBLIC "-Wall")
-
 target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC GLEW)
 
-find_package(Pangolin REQUIRED)
-if(${Pangolin_FOUND})
-  target_include_directories(${PLUGIN_NAME} PUBLIC ${Pangolin_INCLUDE_DIRS})
-  target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC ${Pangolin_LIBRARIES})
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC "MICO_HAS_PANGOLIN")	
-endif()
+# find_package(Pangolin)
+# if(${Pangolin_FOUND})
+#   mplugin_include_directory(${PLUGIN_NAME} ${Pangolin_INCLUDE_DIRS})
+#   mplugin_link_library(${PLUGIN_NAME} ${Pangolin_LIBRARIES})
+#   mplugin_compile_definition(${PLUGIN_NAME} "MICO_HAS_PANGOLIN")
+# endif()
 
 find_package(PCL QUIET REQUIRED)
 if(${PCL_FOUND})
-  target_include_directories(${PLUGIN_NAME} PUBLIC ${PCL_INCLUDE_DIRS})
-  target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE ${PCL_LIBRARIES})
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
+  mplugin_include_directory(${PLUGIN_NAME} ${PCL_INCLUDE_DIRS})
+  mplugin_link_library(${PLUGIN_NAME} ${PCL_LIBRARIES})
+  mplugin_compile_definition(${PLUGIN_NAME} "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
 endif()
-
-if(NOT ${BUNDLE_COMPILATION})
-  find_package(flow REQUIRED)
-  if(${flow_FOUND})
-    target_link_libraries(${PLUGIN_NAME}  LINK_PUBLIC flow::flow)
-    target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
-  endif()
-else()
-  set(flow_FOUND TRUE)
-  target_link_libraries(${PLUGIN_NAME}  LINK_PUBLIC flow)
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_FLOW)
-endif()
-
-set(MICO_DEPS "core")
-if(${HAS_MICO_SLAM})
-  set(MICO_DEPS "${MICO_DEPS}" "slam")
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_MICO_SLAM)
-endif()
-
-if(${HAS_MICO_DNN})
-  set(MICO_DEPS "${MICO_DEPS}" "dnn")
-  target_compile_definitions(${PLUGIN_NAME} PUBLIC HAS_MICO_DNN)
-endif()
-
-foreach(DEP ${MICO_DEPS})
-  if(NOT ${BUNDLE_COMPILATION})
-    find_package(mico-${DEP} REQUIRED HINTS "/usr/local/lib/cmake/mico")
-  endif()
-  target_link_libraries(${PLUGIN_NAME} LINK_PRIVATE mico::mico-${DEP})
-endforeach()
-
-##################################################
-######    Library.                        ########
-##################################################
-#add_definitions(-fopenmp)
 
 ##################################################
 ######    Documentation.                  ########
@@ -131,88 +97,3 @@ if(DOXYGEN_FOUND)
 						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 						COMMENT "Generating API documentation with Doxygen" VERBATIM )
 endif(DOXYGEN_FOUND)
-
-
-##################################################
-######    Installation.                   ########
-##################################################
-include(CMakePackageConfigHelpers)
-
-if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
-endif() 
-
-install(TARGETS ${PLUGIN_NAME} EXPORT ${PLUGIN_NAME}-targets
-	COMPONENT ${PLUGIN_NAME}
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
-	RUNTIME DESTINATION bin
-	INCLUDES DESTINATION include
-)
-
-install(EXPORT ${PLUGIN_NAME}-targets
-	FILE "${PLUGIN_NAME}-targets.cmake"
-	NAMESPACE ${PROJECT_NAME}::
-	DESTINATION lib/cmake/${PROJECT_NAME}
-	COMPONENT ${PLUGIN_NAME}
-)
-
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/${PLUGIN_NAME}-config.cmake.in"
-	"${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
-	@ONLY
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
-    VERSION ${version}
-    COMPATIBILITY AnyNewerVersion
-)
-
-install(
-    FILES
-        "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config.cmake"
-        "${CMAKE_BINARY_DIR}/${PLUGIN_NAME}-config-version.cmake"
-    DESTINATION lib/cmake/${PROJECT_NAME}
-    COMPONENT ${PLUGIN_NAME}
-)
-
-# DESTINATION will be automatically prefixed by ${CMAKE_INSTALL_PREFIX}
-install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
-    COMPONENT ${PLUGIN_NAME}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
-)
-
-# uninstall target 
-if(NOT TARGET uninstall) 
-    configure_file( 
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/cmake_uninstall.cmake.in" 
-        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" 
-        @ONLY) 
- 
-    add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake) 
-endif() 
-
-# FLOW INSTALL target 
-add_custom_target(flow_install_${PLUGIN_NAME} ALL
-                COMMAND ${CMAKE_COMMAND} -E copy 	${CMAKE_CURRENT_BINARY_DIR}/lib${PLUGIN_NAME}.so 
-                ${CMAKE_BINARY_DIR}/plugins/lib${PLUGIN_NAME}.so
-)
-add_dependencies(flow_install_${PLUGIN_NAME} ${PLUGIN_NAME})
-
-
-
-##################################################
-####  CPACK deb generation configuration    ######
-##################################################
-if(${PREPARE_PACKAGE_PPA})
-  set(UPLOAD_PPA "ppa:bardo91/mico")
-  set(CPACK_GENERATOR "DEB")
-  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Pablo Ramon Soria <pabramsor@gmail.com>") #required
-  set(CPACK_DEBIAN_PACKAGE_NAME ${PLUGIN_NAME})
-  
-  include(CPack)
-  include(cmake/templates/prepare_package_ppa.cmake)
-endif()

@@ -20,6 +20,8 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 
+#ifdef HAS_MICO_SLAM
+
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAYECTORYVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_VISUALIZERS_BLOCKTRAYECTORYVISUALIZER_H_
 
@@ -81,5 +83,7 @@ namespace mico{
     }
 
 }
+
+#endif
 
 #endif
