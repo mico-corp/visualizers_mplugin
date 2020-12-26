@@ -70,20 +70,27 @@ mplugin_compile_definition(${PLUGIN_NAME} "${EXTRA_DEFINITIONS}")
 ##################################################
 ######    Loading 3rd party libraries.    ########
 ##################################################
-target_link_libraries(${PLUGIN_NAME} LINK_PUBLIC GLEW)
+mplugin_link_library(${PLUGIN_NAME} GLEW)
 
-# find_package(Pangolin)
-# if(${Pangolin_FOUND})
-#   mplugin_include_directory(${PLUGIN_NAME} ${Pangolin_INCLUDE_DIRS})
-#   mplugin_link_library(${PLUGIN_NAME} ${Pangolin_LIBRARIES})
-#   mplugin_compile_definition(${PLUGIN_NAME} "MICO_HAS_PANGOLIN")
-# endif()
+find_package(Pangolin)
+if(${Pangolin_FOUND})
+  mplugin_include_directory(${PLUGIN_NAME} ${Pangolin_INCLUDE_DIRS})
+  mplugin_link_library(${PLUGIN_NAME} ${Pangolin_LIBRARIES})
+  mplugin_compile_definition(${PLUGIN_NAME} "MICO_HAS_PANGOLIN")
+endif()
+
+find_package(OpenCV REQUIRED)
+if(${OpenCV_FOUND})
+  mplugin_include_directory(${PLUGIN_NAME} ${OpenCV_INCLUDE_DIRS})
+  mplugin_link_library(${PLUGIN_NAME} ${OpenCV_LIBS})
+  mplugin_compile_definition(${PLUGIN_NAME} HAS_OPENCV)
+endif()
 
 find_package(PCL QUIET REQUIRED)
 if(${PCL_FOUND})
   mplugin_include_directory(${PLUGIN_NAME} ${PCL_INCLUDE_DIRS})
-  mplugin_link_library(${PLUGIN_NAME} ${PCL_LIBRARIES})
-  mplugin_compile_definition(${PLUGIN_NAME} "ENABLE_PCL" "DISABLE_PCAP" "DISABLE_PNG" "DISABLE_LIBUSB_1_0")
+  mplugin_link_library(${PLUGIN_NAME} "${PCL_LIBRARIES}")
+  mplugin_compile_definition(${PLUGIN_NAME} ENABLE_PCL DISABLE_PCAP DISABLE_PNG DISABLE_LIBUSB_1_0)
 endif()
 
 ##################################################
