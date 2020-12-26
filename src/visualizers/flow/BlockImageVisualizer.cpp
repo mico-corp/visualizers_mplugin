@@ -21,6 +21,9 @@
 
 
 
+// Not compilable in DLL yet due to VTK dllimport error
+#if !defined(_WIN32)   
+
 #include <mico/visualizers/flow/BlockImageVisualizer.h>
 
 #include <flow/Policy.h>
@@ -122,7 +125,7 @@ namespace mico{
         }
         
         unsigned char* dptr = reinterpret_cast<unsigned char*>(outputVtkImage->GetScalarPointer());
-        mempcpy(dptr, tempCVImage.data, sourceImage.cols*sourceImage.rows*3);
+        memcpy(dptr, tempCVImage.data, sourceImage.cols*sourceImage.rows*3);
 
         outputVtkImage->Modified();
 
@@ -152,10 +155,12 @@ namespace mico{
         tempCVImage.convertTo(tempCVImage,CV_8UC1,255.0f/65535.0f, 0);
         
         unsigned char* dptr = reinterpret_cast<unsigned char*>(outputVtkImage->GetScalarPointer());
-        mempcpy(dptr, tempCVImage.data, sourceCVImage.cols*sourceCVImage.rows);
+        memcpy(dptr, tempCVImage.data, sourceCVImage.cols*sourceCVImage.rows);
 
         outputVtkImage->Modified();
 
         return outputVtkImage;
     }
 }
+
+#endif

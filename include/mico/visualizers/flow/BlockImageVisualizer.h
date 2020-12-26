@@ -23,6 +23,10 @@
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_BLOCKIMAGEVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_BLOCKIMAGEVISUALIZER_H_
 
+
+// Not compilable in DLL yet due to VTK dllimport error
+#if !defined(_WIN32)
+
 #include <flow/Block.h>
 
 #include <vtkJPEGReader.h>
@@ -62,5 +66,7 @@ namespace mico{
     };
 
 }
+
+#endif
 
 #endif

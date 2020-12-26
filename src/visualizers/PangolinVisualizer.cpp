@@ -19,6 +19,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
+#ifdef MICO_HAS_PANGOLIN
 
 #include <mico/visualizers/PangolinVisualizer.h>
 
@@ -30,7 +31,6 @@
 #include <unistd.h>
 
 namespace mico{
-    #ifdef MICO_HAS_PANGOLIN
         int PangolinVisualizer::sWinId = 0;
 
         PangolinVisualizer::PangolinVisualizer(){
@@ -224,5 +224,6 @@ namespace mico{
 
         }
 
-    #endif
 }
+
+#endif
