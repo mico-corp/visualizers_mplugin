@@ -21,6 +21,11 @@
 
 #ifdef MICO_HAS_PANGOLIN
 
+#if defined(_WIN32)
+#   undef PANGOLIN_UNUSED
+#   define PANGOLIN_UNUSED(x) (void)(x)
+#endif
+
 #include <mico/visualizers/PangolinVisualizer.h>
 
 #include <pangolin/pangolin.h>
@@ -28,7 +33,9 @@
 #include <pangolin/scene/scenehandler.h>
 #include <pangolin/gl/gltext.h>
 #include <pangolin/gl/glfont.h>
-#include <unistd.h>
+#include <thread>
+//#include <unistd.h>
+
 
 namespace mico{
         int PangolinVisualizer::sWinId = 0;
@@ -136,7 +143,7 @@ namespace mico{
 
                 // Swap frames and Process Events
                 pangolin::FinishFrame();
-                usleep(1000);
+                std::this_thread::sleep_for(std::chrono::microseconds(1000));
             }
             
             pangolin::DestroyWindow(windowName_);

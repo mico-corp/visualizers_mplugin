@@ -75,7 +75,7 @@ namespace mico {
         void addCovisibility(int _id,const std::vector<typename Dataframe<PointType_>::Ptr> &_others);
     
     private:
-        boost::shared_ptr<pcl::visualization::PCLVisualizer> mViewer;
+        std::shared_ptr<pcl::visualization::PCLVisualizer> mViewer;
 
         float x,y,z;
         typename pcl::octree::OctreePointCloudOccupancy<PointType_> mOctreeVis;

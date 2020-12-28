@@ -11,7 +11,7 @@ namespace mico {
     {
         //if(_configFile.contains("enable") && (bool) _configFile["enable"]){
             // mDatabase  = _database;
-            mViewer = boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer("3D Viewer"));
+            mViewer = std::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer("3D Viewer"));
             mViewer->setBackgroundColor(0.1, 0.1, 0.1, 0);
             mViewer->addCoordinateSystem(0.05, "base", 0);
             mViewer->addCoordinateSystem(0.02, "current_pose", 0);

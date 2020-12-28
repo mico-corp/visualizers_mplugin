@@ -58,7 +58,7 @@ if(${HAS_MICO_DNN})
   set(EXTRA_DEFINITIONS ${EXTRA_DEFINITIONS} HAS_MICO_DNN)
 endif()
 
-SET(MICO_MODULES ${MICO_MODULES} math PARENT_SCOPE)
+SET(MICO_MODULES ${MICO_MODULES} visualizers PARENT_SCOPE)
 add_mplugin(    PLUGIN_NAME ${PLUGIN_NAME} 
                 PLUGIN_SOURCES ${MICO_VISUALIZERS_SOURCE_FILES}
                 PLUGIN_HEADERS  ${MICO_VISUALIZERS_HEADER_FILES} 
@@ -70,12 +70,17 @@ mplugin_compile_definition(${PLUGIN_NAME} "${EXTRA_DEFINITIONS}")
 ##################################################
 ######    Loading 3rd party libraries.    ########
 ##################################################
-mplugin_link_library(${PLUGIN_NAME} GLEW)
 
 find_package(Pangolin)
 if(${Pangolin_FOUND})
   mplugin_include_directory(${PLUGIN_NAME} ${Pangolin_INCLUDE_DIRS})
   mplugin_link_library(${PLUGIN_NAME} ${Pangolin_LIBRARIES})
+  if(UNIX)
+	mplugin_link_library(${PLUGIN_NAME} GLEW)
+  elseif(WIN32)
+	mplugin_include_directory(${PLUGIN_NAME} "C:/Program Files (x86)/glew/include")
+	mplugin_link_library(${PLUGIN_NAME} "C:/Program Files (x86)/glew/lib/glewd.lib")
+  endif()
   mplugin_compile_definition(${PLUGIN_NAME} "MICO_HAS_PANGOLIN")
 endif()
 
