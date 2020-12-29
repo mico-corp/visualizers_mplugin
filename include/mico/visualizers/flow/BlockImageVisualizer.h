@@ -23,22 +23,12 @@
 #ifndef MICO_FLOW_STREAMERS_BLOCKS_BLOCKIMAGEVISUALIZER_H_
 #define MICO_FLOW_STREAMERS_BLOCKS_BLOCKIMAGEVISUALIZER_H_
 
-
-// Not compilable in DLL yet due to VTK dllimport error
-#if !defined(_WIN32)
-
 #include <flow/Block.h>
-
-#include <vtkJPEGReader.h>
-#include <vtkImageData.h>
-#include <vtkImageMapper.h> // Note: this is a 2D mapper (cf. vtkImageActor which is 3D)
-#include <vtkActor2D.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkSmartPointer.h>
-
 #include <opencv2/opencv.hpp>
+#include <mutex>
+
+class QLabel;
+class QTimer;
 
 namespace mico{
 
@@ -47,26 +37,19 @@ namespace mico{
         virtual std::string name() const override {return "Image Visualizer";}
 
         BlockImageVisualizer();
-        // ~BlockImageVisualizer(){};
+        ~BlockImageVisualizer();
 
         std::string description() const override {return    "Simple image visualizer block. Compatible with RGB and Depth images.\n"
                                                             "   - Inputs: \n";};
 
     private:
-        vtkSmartPointer<vtkImageData> convertCVMatToVtkImageData(const cv::Mat &sourceCVImage, bool flipOverXAxis);
-        vtkSmartPointer<vtkImageData> convertCVMatToVtkImageDataDepth(const cv::Mat &sourceCVImage, bool flipOverXAxis);
-
-    private:
-        vtkSmartPointer<vtkImageMapper> mapper_;
-        vtkSmartPointer<vtkActor2D> image_;
-        vtkSmartPointer<vtkRenderer> renderer_;
-        vtkSmartPointer<vtkRenderWindow> window_;
-
+        QLabel *imageView_;
+        QTimer* imageRefresher_;
+        cv::Mat lastImage_;
+        std::mutex imgLock_;
         bool idle_ = true;
     };
 
 }
-
-#endif
 
 #endif

@@ -36,9 +36,8 @@ extern "C" FLOW_FACTORY_EXPORT flow::PluginNodeCreator* factory(){
 
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockNumberVisualizer > >(); }, "Visualizers");
     
-    #if !defined(_WIN32)
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
-    #endif
+    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
+
     #ifdef MICO_HAS_PANGOLIN
         creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockTrajectoryVisualizerPangolin > >(); }, "Visualizers");
     #endif
