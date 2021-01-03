@@ -91,7 +91,7 @@ if(${OpenCV_FOUND})
   mplugin_compile_definition(${PLUGIN_NAME} HAS_OPENCV)
 endif()
 
-find_package(pcl REQUIRED)
+find_package(pcl  QUIET REQUIRED)
 if(${pcl_FOUND})
   mplugin_include_directory(${PLUGIN_NAME} "${pcl_INCLUDE_DIRS}")
   mplugin_link_library(${PLUGIN_NAME} "${pcl_LIBRARIES}")
