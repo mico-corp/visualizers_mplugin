@@ -91,10 +91,9 @@ if(${OpenCV_FOUND})
   mplugin_compile_definition(${PLUGIN_NAME} HAS_OPENCV)
 endif()
 
-find_package(PCL QUIET REQUIRED)
-if(${PCL_FOUND})
-  mplugin_include_directory(${PLUGIN_NAME} ${PCL_INCLUDE_DIRS})
-  mplugin_link_library(${PLUGIN_NAME} "${PCL_LIBRARIES}")
+if(${pcl_FOUND})
+  mplugin_include_directory(${PLUGIN_NAME} "${pcl_INCLUDE_DIRS}")
+  mplugin_link_library(${PLUGIN_NAME} "${pcl_LIBRARIES}")
   mplugin_compile_definition(${PLUGIN_NAME} ENABLE_PCL DISABLE_PCAP DISABLE_PNG DISABLE_LIBUSB_1_0)
 endif()
 
