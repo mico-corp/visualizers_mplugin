@@ -111,7 +111,7 @@ namespace mico{
     }
 
 
-    bool BlockSceneVisualizer::configure(std::unordered_map<std::string, std::string> _params) {
+    bool BlockSceneVisualizer::configure(std::vector<flow::ConfigParameterDef> _params) {
         {
             std::istringstream istr(_params["voxel_size"]);
             istr >> voxelSize_;
@@ -132,10 +132,10 @@ namespace mico{
         return true;
     }
 
-    std::vector<std::pair<std::string, flow::Block::eParameterType>>  BlockSceneVisualizer::parameters() {
-        return {    {"voxel_size", flow::Block::eParameterType::DECIMAL}, 
-                    {"use_octree", flow::Block::eParameterType::BOOLEAN},
-                    {"octree_depth", flow::Block::eParameterType::INTEGER}
+    std::vector<flow::ConfigParameterDef>  BlockSceneVisualizer::parameters() {
+        return {    {"voxel_size", flow::ConfigParameterDef::eParameterType::DECIMAL}, 
+                    {"use_octree", flow::ConfigParameterDef::eParameterType::BOOLEAN},
+                    {"octree_depth", flow::ConfigParameterDef::eParameterType::INTEGER}
                     };
     }
 
