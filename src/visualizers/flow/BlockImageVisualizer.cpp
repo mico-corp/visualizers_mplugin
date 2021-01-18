@@ -50,7 +50,7 @@ namespace mico{
         });
         imageRefresher_->start(30);
 
-        createPolicy({  {"Image", "image"} });
+        createPolicy({  flow::makeInput<cv::Mat>("Image") });
 
         registerCallback({"Image"}, 
                                 [&](flow::DataFlow  _data){

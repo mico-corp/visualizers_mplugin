@@ -22,6 +22,8 @@
 #ifdef MICO_HAS_PANGOLIN
 #include <mico/visualizers/flow/BlockTrajectoryVisualizerPangolin.h>
 
+#include <flow/Policy.h>
+
 #include <QDialog>
 #include <QHBoxLayout>
 #include <QGroupBox>
@@ -76,9 +78,9 @@ namespace mico{
             lastPositions_.resize(nTrajs_);
             isFirst_.resize(nTrajs_, true);
 
-            std::map<std::string, std::string> policyInputs;
+            std::vector<flow::PolicyInput*> policyInputs;
             for(unsigned i = 0; i < nTrajs_; i++){
-                policyInputs["Camera Pose " +std::to_string(i)] = "mat44";
+                policyInputs.push_back(flow::makeInput<Eigen::Matrix4f>("Camera Pose " +std::to_string(i)));
             }
             
             removePolicy();

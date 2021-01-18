@@ -33,7 +33,7 @@ namespace mico{
     BlockNumberVisualizer::BlockNumberVisualizer(){
         textDisplay_ = new QLabel("0.000000");
 
-        createPolicy({  {"Number", "float"} });
+        createPolicy({  flow::makeInput<float>("Number")});
 
         registerCallback({"Number"}, 
                                 [&](flow::DataFlow  _data){
