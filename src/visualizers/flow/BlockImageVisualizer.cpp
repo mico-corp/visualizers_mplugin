@@ -34,6 +34,8 @@ namespace mico{
         imageView_ = new QLabel();
         imageView_->setScaledContents(true);
         imageView_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        imageView_->setMinimumHeight(150);
+        imageView_->setMinimumWidth(150);
         imageView_->show();
 
         imageRefresher_ = new QTimer();
