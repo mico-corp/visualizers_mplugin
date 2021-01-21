@@ -48,7 +48,7 @@ namespace mico{
 
     private:
         std::mutex dataLock_;
-        std::vector<float> pendingData_;
+        std::vector<float> pendingData1_, pendingData2_, pendingData3_; // 666 ugly but fastly implemented
         QCustomPlot *plot_;
         QTimer *dataTimer_;
         std::mutex imgLock_;

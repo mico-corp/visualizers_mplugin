@@ -40,10 +40,7 @@ endif()
 
 file(GLOB_RECURSE MICO_VISUALIZERS_SOURCE_FILES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE MICO_VISUALIZERS_HEADER_FILES "include/*.h" "include/*.inl")
-
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
+qt5_wrap_cpp(MOC_FILES src/visualizers/qcustomplot.cpp include/mico/visualizers/qcustomplot.h)
 
 ##################################################
 ###### Create project and configure ALIAS ########
@@ -56,18 +53,19 @@ if(${HAS_MICO_SLAM})
 endif()
 
 if(${HAS_MICO_DNN})
-  set(MICO_DEPS ${MICO_DEPS dnn)
+  set(MICO_DEPS ${MICO_DEPS} dnn)
   set(EXTRA_DEFINITIONS ${EXTRA_DEFINITIONS} HAS_MICO_DNN)
 endif()
 
 SET(MICO_MODULES ${MICO_MODULES} visualizers PARENT_SCOPE)
 add_mplugin(    PLUGIN_NAME ${PLUGIN_NAME} 
-                PLUGIN_SOURCES ${MICO_VISUALIZERS_SOURCE_FILES}
+                PLUGIN_SOURCES ${MICO_VISUALIZERS_SOURCE_FILES} ${MOC_FILES}
                 PLUGIN_HEADERS  ${MICO_VISUALIZERS_HEADER_FILES} 
                 MICO_DEPS ${MICO_DEPS})
 
 
 mplugin_compile_definition(${PLUGIN_NAME} "${EXTRA_DEFINITIONS}")
+mplugin_compile_private_definition(${PLUGIN_NAME} QCUSTOMPLOT_COMPILE_LIBRARY)
 
 ##################################################
 ######    Loading 3rd party libraries.    ########

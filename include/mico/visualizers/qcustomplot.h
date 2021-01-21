@@ -119,14 +119,13 @@ class QCPBars;
 #define QCUSTOMPLOT_VERSION 0x020001
 
 // decl definitions for shared library compilation/usage:
-
-#if defined (FLOW_LIB_SHARED)
-#  ifdef FLOW_EXPORTS
-#    define QCP_LIB_DECL QCP_LIB_DECL
-#  else
-#    define QCP_LIB_DECL Q_DECL_IMPORT
-#  endif
-#elif !defined (FLOW_LIB_SHARED)
+#if defined(WIN32)
+#if defined(QCUSTOMPLOT_COMPILE_LIBRARY)
+#  define QCP_LIB_DECL Q_DECL_EXPORT
+#else
+#  define QCP_LIB_DECL Q_DECL_IMPORT
+#endif
+#else
 #  define QCP_LIB_DECL
 #endif
 
