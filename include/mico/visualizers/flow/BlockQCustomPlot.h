@@ -19,34 +19,44 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //---------------------------------------------------------------------------------------------------------------------
 
-#include <flow/flow.h>
 
-#include <mico/visualizers/flow/BlockImageVisualizer.h>
-#include <mico/visualizers/flow/BlockNumberVisualizer.h>
-#include <mico/visualizers/flow/BlockPointCloudVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizer.h>
-#include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
-#include <mico/visualizers/flow/BlockTrajectoryVisualizerPangolin.h>
-#include <mico/visualizers/flow/BlockQCustomPlot.h>
+#ifndef MICO_FLOW_STREAMERS_BLOCKS_BlockQCustomPlot_H_
+#define MICO_FLOW_STREAMERS_BLOCKS_BlockQCustomPlot_H_
 
-using namespace mico;
-using namespace flow;
+#include <flow/Block.h>
+#include <opencv2/opencv.hpp>
+#include <mutex>
 
-extern "C" FLOW_FACTORY_EXPORT flow::PluginNodeCreator* factory(){
-    flow::PluginNodeCreator *creator = new flow::PluginNodeCreator;
+class QLabel;
+class QTimer;
+class QCustomPlot;
 
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockNumberVisualizer > >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
-    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockQCustomPlot > >(); }, "Visualizers");
+namespace mico{
 
-    #ifdef MICO_HAS_PANGOLIN
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockTrajectoryVisualizerPangolin > >(); }, "Visualizers");
-    #endif
-    #ifdef HAS_MICO_SLAM
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockPointCloudVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizer> >(); }, "Visualizers");
-        creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockSceneVisualizerPangolin> >(); }, "Visualizers");
-    #endif
-    
-    return creator;
+    class BlockQCustomPlot: public flow::Block{
+    public:
+        virtual std::string name() const override {return "Plotter";}
+
+        BlockQCustomPlot();
+        ~BlockQCustomPlot();
+
+        std::string description() const override {return    "Signal plotters.\n"
+                                                            "   - Inputs: \n";};
+
+    private:
+        void realTimePlot();
+
+    private:
+        std::mutex dataLock_;
+        std::vector<float> pendingData_;
+        QCustomPlot *plot_;
+        QTimer *dataTimer_;
+        std::mutex imgLock_;
+        bool idle_ = true;
+
+        std::chrono::steady_clock::time_point t0_;
+    };
+
 }
+
+#endif

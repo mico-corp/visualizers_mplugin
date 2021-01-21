@@ -41,7 +41,9 @@ endif()
 file(GLOB_RECURSE MICO_VISUALIZERS_SOURCE_FILES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE MICO_VISUALIZERS_HEADER_FILES "include/*.h" "include/*.inl")
 
-
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 ##################################################
 ###### Create project and configure ALIAS ########
