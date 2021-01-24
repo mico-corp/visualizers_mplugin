@@ -56,16 +56,10 @@ namespace mico{
 
         registerCallback({ "signal1" },
             [&](flow::DataFlow  _data) {
-                if (idle_) {
-                    idle_ = false;
-
-                    float data = _data.get<float>("signal1");
-                    dataLock_.lock();
-                    pendingData1_.push_back(data);
-                    dataLock_.unlock();
-                    idle_ = true;
-                }
-
+                float data = _data.get<float>("signal1");
+                dataLock_.lock();
+                pendingData1_.push_back(data);
+                dataLock_.unlock();
             }
         );
         registerCallback({ "signal2" },
