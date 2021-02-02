@@ -28,6 +28,7 @@
 #include <mico/visualizers/flow/BlockSceneVisualizerPangolin.h>
 #include <mico/visualizers/flow/BlockTrajectoryVisualizerPangolin.h>
 #include <mico/visualizers/flow/BlockQCustomPlot.h>
+#include <mico/visualizers/flow/BlockScatterPlot.h>
 
 using namespace mico;
 using namespace flow;
@@ -38,6 +39,7 @@ extern "C" FLOW_FACTORY_EXPORT flow::PluginNodeCreator* factory(){
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockNumberVisualizer > >(); }, "Visualizers");
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockImageVisualizer > >(); }, "Visualizers");
     creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockQCustomPlot > >(); }, "Visualizers");
+    creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockScatterPlot > >(); }, "Visualizers");
 
     #ifdef MICO_HAS_PANGOLIN
         creator->registerNodeCreator([](){ return std::make_unique<FlowVisualBlock<BlockTrajectoryVisualizerPangolin > >(); }, "Visualizers");
