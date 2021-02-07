@@ -64,8 +64,8 @@ add_mplugin(    PLUGIN_NAME ${PLUGIN_NAME}
                 MICO_DEPS ${MICO_DEPS})
 
 
-mplugin_compile_definition(${PLUGIN_NAME} "${EXTRA_DEFINITIONS}")
-mplugin_compile_private_definition(${PLUGIN_NAME} QCUSTOMPLOT_COMPILE_LIBRARY)
+mplugin_compile_definition( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_DEFINITIONS ${EXTRA_DEFINITIONS})
+mplugin_compile_definition(PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_DEFINITIONS QCUSTOMPLOT_COMPILE_LIBRARY IS_PRIVATE)
 
 ##################################################
 ######    Loading 3rd party libraries.    ########
@@ -73,29 +73,29 @@ mplugin_compile_private_definition(${PLUGIN_NAME} QCUSTOMPLOT_COMPILE_LIBRARY)
 
 find_package(Pangolin)
 if(${Pangolin_FOUND})
-  mplugin_include_directory(${PLUGIN_NAME} ${Pangolin_INCLUDE_DIRS})
-  mplugin_link_library(${PLUGIN_NAME} ${Pangolin_LIBRARIES})
+  mplugin_include_directory( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_INCLUDES ${Pangolin_INCLUDE_DIRS})
+  mplugin_link_library( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_LIBRARIES ${Pangolin_LIBRARIES})
   if(UNIX)
-	mplugin_link_library(${PLUGIN_NAME} GLEW)
+	  mplugin_link_library( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_LIBRARIES GLEW)
   elseif(WIN32)
-	mplugin_include_directory(${PLUGIN_NAME} "C:/Program Files (x86)/glew/include")
-	mplugin_link_library(${PLUGIN_NAME} "C:/Program Files (x86)/glew/lib/glewd.lib")
+    mplugin_include_directory( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_INCLUDES "C:/Program Files (x86)/glew/include")
+    mplugin_link_library( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_LIBRARIES "C:/Program Files (x86)/glew/lib/glewd.lib")
   endif()
-  mplugin_compile_definition(${PLUGIN_NAME} "MICO_HAS_PANGOLIN")
+  mplugin_compile_definition( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_DEFINITIONS "MICO_HAS_PANGOLIN")
 endif()
 
 find_package(OpenCV REQUIRED)
 if(${OpenCV_FOUND})
-  mplugin_include_directory(${PLUGIN_NAME} ${OpenCV_INCLUDE_DIRS})
-  mplugin_link_library(${PLUGIN_NAME} ${OpenCV_LIBS})
-  mplugin_compile_definition(${PLUGIN_NAME} HAS_OPENCV)
+  mplugin_include_directory( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_INCLUDES ${OpenCV_INCLUDE_DIRS})
+  mplugin_link_library( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_LIBRARIES ${OpenCV_LIBS})
+  mplugin_compile_definition( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_DEFINITIONS HAS_OPENCV)
 endif()
 
 find_package(PCL  QUIET REQUIRED)
 if(${PCL_FOUND})
-  mplugin_include_directory(${PLUGIN_NAME} "${PCL_INCLUDE_DIRS}")
-  mplugin_link_library(${PLUGIN_NAME} "${PCL_LIBRARIES}")
-  mplugin_compile_definition(${PLUGIN_NAME} ENABLE_PCL DISABLE_PCAP DISABLE_PNG DISABLE_LIBUSB_1_0)
+  mplugin_include_directory( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_INCLUDES ${PCL_INCLUDE_DIRS})
+  mplugin_link_library( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_LIBRARIES ${PCL_LIBRARIES})
+  mplugin_compile_definition( PLUGIN_NAME ${PLUGIN_NAME} PLUGIN_DEFINITIONS ENABLE_PCL DISABLE_PCAP DISABLE_PNG DISABLE_LIBUSB_1_0)
 endif()
 
 ##################################################
