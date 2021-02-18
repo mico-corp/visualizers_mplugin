@@ -32,29 +32,34 @@ class QTimer;
 class QCustomPlot;
 
 namespace mico{
+    namespace visualizer{
+    
+        /// Mico block for visualizing scattered streams of data in 2D.
+        /// @ingroup  mico_visualizer
+        class BlockScatterPlot: public flow::Block{
+        public:
+            /// Get name of block
+            virtual std::string name() const override {return "Scatter";}
 
-    class BlockScatterPlot: public flow::Block{
-    public:
-        virtual std::string name() const override {return "Scatter";}
+            BlockScatterPlot();
+            ~BlockScatterPlot();
 
-        BlockScatterPlot();
-        ~BlockScatterPlot();
+            /// Returns a brief description of the block
+            std::string description() const override {return    "Scatter plot.\n"
+                                                                "   - Inputs: \n";};
 
-        std::string description() const override {return    "Scatter plot.\n"
-                                                            "   - Inputs: \n";};
+        private:
+            void realTimePlot();
 
-    private:
-        void realTimePlot();
-
-    private:
-        std::mutex dataLock_;
-        std::vector<std::pair<float,float>> pendingData_; // 666 ugly but fastly implemented
-        QCustomPlot *plot_;
-        QTimer *dataTimer_;
-        std::mutex imgLock_;
-        bool idle_ = true;
-    };
-
+        private:
+            std::mutex dataLock_;
+            std::vector<std::pair<float,float>> pendingData_; // 666 ugly but fastly implemented
+            QCustomPlot *plot_;
+            QTimer *dataTimer_;
+            std::mutex imgLock_;
+            bool idle_ = true;
+        };
+    }
 }
 
 #endif

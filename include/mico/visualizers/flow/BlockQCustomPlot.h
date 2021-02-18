@@ -32,31 +32,40 @@ class QTimer;
 class QCustomPlot;
 
 namespace mico{
+   
+    namespace visualizer{
+    
+        /// Mico block for visualizing continuous numberical streams of data.
+        /// @ingroup  mico_visualizer
+        class BlockQCustomPlot: public flow::Block{
+        public:
+            /// Get name of block
+            virtual std::string name() const override {return "Plotter";}
 
-    class BlockQCustomPlot: public flow::Block{
-    public:
-        virtual std::string name() const override {return "Plotter";}
+            /// Base constructor
+            BlockQCustomPlot();
 
-        BlockQCustomPlot();
-        ~BlockQCustomPlot();
+            /// Base destructor
+            ~BlockQCustomPlot();
 
-        std::string description() const override {return    "Signal plotters.\n"
-                                                            "   - Inputs: \n";};
+            /// Returns a brief description of the block
+            std::string description() const override {return    "Signal plotters.\n"
+                                                                "   - Inputs: \n";};
 
-    private:
-        void realTimePlot();
+        private:
+            void realTimePlot();
 
-    private:
-        std::mutex dataLock_;
-        std::vector<float> pendingData1_, pendingData2_, pendingData3_; // 666 ugly but fastly implemented
-        QCustomPlot *plot_;
-        QTimer *dataTimer_;
-        std::mutex imgLock_;
-        bool idle_ = true;
+        private:
+            std::mutex dataLock_;
+            std::vector<float> pendingData1_, pendingData2_, pendingData3_; // 666 ugly but fastly implemented
+            QCustomPlot *plot_;
+            QTimer *dataTimer_;
+            std::mutex imgLock_;
+            bool idle_ = true;
 
-        std::chrono::steady_clock::time_point t0_;
-    };
-
+            std::chrono::steady_clock::time_point t0_;
+        };
+    }
 }
 
 #endif

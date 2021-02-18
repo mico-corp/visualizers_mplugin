@@ -29,52 +29,52 @@
 #include <QPixmap>
 
 namespace mico{
+    namespace visualizer{
+        BlockImageVisualizer::BlockImageVisualizer(){
+            imageView_ = new QLabel();
+            imageView_->setScaledContents(true);
+            imageView_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+            imageView_->setMinimumHeight(150);
+            imageView_->setMinimumWidth(150);
+            imageView_->show();
 
-    BlockImageVisualizer::BlockImageVisualizer(){
-        imageView_ = new QLabel();
-        imageView_->setScaledContents(true);
-        imageView_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-        imageView_->setMinimumHeight(150);
-        imageView_->setMinimumWidth(150);
-        imageView_->show();
+            imageRefresher_ = new QTimer();
 
-        imageRefresher_ = new QTimer();
+            QObject::connect(imageRefresher_, &QTimer::timeout, [&]() {
+                cv::Mat image;
+                imgLock_.lock();
+                image = lastImage_;
+                imgLock_.unlock();
+                if (image.rows != 0) {
+                    QImage qimg = QImage(image.data, image.cols, image.rows, QImage::Format_RGB888).rgbSwapped();
+                    imageView_->setPixmap(QPixmap::fromImage(qimg));
+                }
+            });
+            imageRefresher_->start(30);
 
-        QObject::connect(imageRefresher_, &QTimer::timeout, [&]() {
-            cv::Mat image;
-            imgLock_.lock();
-            image = lastImage_;
-            imgLock_.unlock();
-            if (image.rows != 0) {
-                QImage qimg = QImage(image.data, image.cols, image.rows, QImage::Format_RGB888).rgbSwapped();
-                imageView_->setPixmap(QPixmap::fromImage(qimg));
-            }
-        });
-        imageRefresher_->start(30);
+            createPolicy({  flow::makeInput<cv::Mat>("Image") });
 
-        createPolicy({  flow::makeInput<cv::Mat>("Image") });
-
-        registerCallback({"Image"}, 
-                                [&](flow::DataFlow  _data){
-                                    if(idle_){
-                                        idle_ = false;  
-                                        
-                                        cv::Mat image = _data.get<cv::Mat>("Image");
-                                        if(image.rows != 0){
-                                            imgLock_.lock();
-                                            lastImage_ = image;
-                                            imgLock_.unlock();
+            registerCallback({"Image"}, 
+                                    [&](flow::DataFlow  _data){
+                                        if(idle_){
+                                            idle_ = false;  
+                                            
+                                            cv::Mat image = _data.get<cv::Mat>("Image");
+                                            if(image.rows != 0){
+                                                imgLock_.lock();
+                                                lastImage_ = image;
+                                                imgLock_.unlock();
+                                            }
+                                            idle_ = true;
                                         }
-                                        idle_ = true;
+
                                     }
-
-                                }
-                            );
+                                );
+        }
+        
+        BlockImageVisualizer::~BlockImageVisualizer() {
+            imageRefresher_->stop();
+            imageView_->hide();
+        };
     }
-    
-    BlockImageVisualizer::~BlockImageVisualizer() {
-        imageRefresher_->stop();
-        imageView_->hide();
-    };
-
-}
+}   

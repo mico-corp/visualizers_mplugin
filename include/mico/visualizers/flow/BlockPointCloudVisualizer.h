@@ -51,26 +51,32 @@
 #include <pcl/point_types.h>
 
 namespace mico{
-    class BlockPointCloudVisualizer: public flow::Block, VtkVisualizer3D{
-    public:
-        virtual std::string name() const override {return "Point cloud Visualizer";}
+       
+    namespace visualizer{
+    
+    /// Mico block for visualizing streams of point clouds.
+    /// @ingroup  mico_visualizer
+        class BlockPointCloudVisualizer: public flow::Block, VtkVisualizer3D{
+        public:
+            /// Get name of block
+            virtual std::string name() const override {return "Point cloud Visualizer";}
 
-        BlockPointCloudVisualizer();
-        ~BlockPointCloudVisualizer();
+            BlockPointCloudVisualizer();
+            ~BlockPointCloudVisualizer();
 
-    private:
-        void updateRender(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr _cloud);
-    private:
-        vtkSmartPointer<vtkNamedColors> colors = vtkSmartPointer<vtkNamedColors>::New();
-        vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-        vtkSmartPointer<vtkActor> prevActor = nullptr;
-        
-        std::mutex actorGuard_;
-        bool idle_ = true;
-        int currentIdx_ = 0;
+        private:
+            void updateRender(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr _cloud);
+        private:
+            vtkSmartPointer<vtkNamedColors> colors = vtkSmartPointer<vtkNamedColors>::New();
+            vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+            vtkSmartPointer<vtkActor> prevActor = nullptr;
+            
+            std::mutex actorGuard_;
+            bool idle_ = true;
+            int currentIdx_ = 0;
 
-    };
-
+        };
+    }
 }
 
 #endif

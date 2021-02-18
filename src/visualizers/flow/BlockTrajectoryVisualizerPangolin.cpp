@@ -31,7 +31,7 @@
 #include <QPushButton>
 
 namespace mico{
-
+    namespace visualizer{
 
         BlockTrajectoryVisualizerPangolin::BlockTrajectoryVisualizerPangolin(){
             this->preparePolicy();           
@@ -118,7 +118,7 @@ namespace mico{
             return layout;
         }
 
-
+    }
 }
 
 

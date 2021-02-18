@@ -30,7 +30,7 @@
 #include <mico/visualizers/flow/BlockQCustomPlot.h>
 #include <mico/visualizers/flow/BlockScatterPlot.h>
 
-using namespace mico;
+using namespace mico::visualizer;
 using namespace flow;
 
 extern "C" FLOW_FACTORY_EXPORT flow::PluginNodeCreator* factory(){

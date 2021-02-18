@@ -30,60 +30,60 @@
 #include <mico/visualizers/qcustomplot.h>
 
 namespace mico{
+    namespace visualizer{
+        BlockScatterPlot::BlockScatterPlot(){
+            plot_ = new QCustomPlot();
 
-    BlockScatterPlot::BlockScatterPlot(){
-        plot_ = new QCustomPlot();
+            plot_->xAxis->setLabel("x");
+            plot_->yAxis->setLabel("y");
 
-        plot_->xAxis->setLabel("x");
-        plot_->yAxis->setLabel("y");
+            plot_->setInteractions(   QCP::iRangeDrag | QCP::iRangeZoom  | QCP::iSelectPlottables );
 
-        plot_->setInteractions(   QCP::iRangeDrag | QCP::iRangeZoom  | QCP::iSelectPlottables );
+            plot_->addGraph()->setPen(QPen(QColor(255,0,0)));;
+            plot_->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
+            //      QCPScatterStyle( QCPScatterStyle::ssDot, 1 ) );
+            plot_->graph(0)->setLineStyle(QCPGraph::lsNone);
+            // plot_->graph(0)->setAdaptiveSampling(false);
 
-        plot_->addGraph()->setPen(QPen(QColor(255,0,0)));;
-        plot_->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
-        //      QCPScatterStyle( QCPScatterStyle::ssDot, 1 ) );
-        plot_->graph(0)->setLineStyle(QCPGraph::lsNone);
-        // plot_->graph(0)->setAdaptiveSampling(false);
+            dataTimer_ = new QTimer();
+            QObject::connect(dataTimer_, &QTimer::timeout , [this](){this->realTimePlot();});
+            dataTimer_->start(30);
 
-        dataTimer_ = new QTimer();
-        QObject::connect(dataTimer_, &QTimer::timeout , [this](){this->realTimePlot();});
-        dataTimer_->start(30);
+            createPolicy({  flow::makeInput<float>("x"), 
+                            flow::makeInput<float>("y")});
 
-        createPolicy({  flow::makeInput<float>("x"), 
-                        flow::makeInput<float>("y")});
-
-        registerCallback({ "x", "y" },
-            [&](flow::DataFlow  _data) {
-                float x = _data.get<float>("x");
-                float y = _data.get<float>("y");
-                dataLock_.lock();
-                pendingData_.push_back(std::make_pair(x,y));
-                dataLock_.unlock();
-            }
-        );
+            registerCallback({ "x", "y" },
+                [&](flow::DataFlow  _data) {
+                    float x = _data.get<float>("x");
+                    float y = _data.get<float>("y");
+                    dataLock_.lock();
+                    pendingData_.push_back(std::make_pair(x,y));
+                    dataLock_.unlock();
+                }
+            );
 
 
-        plot_->show();
+            plot_->show();
 
-    }
-    
-    BlockScatterPlot::~BlockScatterPlot() {
-        dataTimer_->stop();
-        plot_->hide();
-    };
-
-    //---------------------------------------------------------------------------------------------------------------------
-    void BlockScatterPlot::realTimePlot(){
-
-        dataLock_.lock();
-        for (auto& [x,y] : pendingData_) {
-            plot_->graph(0)->addData(x, y);
         }
-        pendingData_.clear();
-        dataLock_.unlock();
+        
+        BlockScatterPlot::~BlockScatterPlot() {
+            dataTimer_->stop();
+            plot_->hide();
+        };
 
-        // make key axis range scroll with the data (at a constant range size of 8):
-        plot_->replot();
+        //---------------------------------------------------------------------------------------------------------------------
+        void BlockScatterPlot::realTimePlot(){
+
+            dataLock_.lock();
+            for (auto& [x,y] : pendingData_) {
+                plot_->graph(0)->addData(x, y);
+            }
+            pendingData_.clear();
+            dataLock_.unlock();
+
+            // make key axis range scroll with the data (at a constant range size of 8):
+            plot_->replot();
+        }
     }
-
 }

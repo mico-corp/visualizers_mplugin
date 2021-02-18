@@ -31,25 +31,33 @@ class QLabel;
 class QTimer;
 
 namespace mico{
+    namespace visualizer{
+        
+        /// Mico block for visualizing streams of images.
+        /// @ingroup  mico_visualizer
+        class BlockImageVisualizer: public flow::Block{
+        public:
+            /// Get name of block
+            virtual std::string name() const override {return "Image Visualizer";}
 
-    class BlockImageVisualizer: public flow::Block{
-    public:
-        virtual std::string name() const override {return "Image Visualizer";}
+            /// Base constructor
+            BlockImageVisualizer();
 
-        BlockImageVisualizer();
-        ~BlockImageVisualizer();
+            /// Base destructor
+            ~BlockImageVisualizer();
 
-        std::string description() const override {return    "Simple image visualizer block. Compatible with RGB and Depth images.\n"
-                                                            "   - Inputs: \n";};
+            /// Returns a brief description of the block
+            std::string description() const override {return    "Simple image visualizer block. Compatible with RGB and Depth images.\n"
+                                                                "   - Inputs: \n";};
 
-    private:
-        QLabel *imageView_;
-        QTimer* imageRefresher_;
-        cv::Mat lastImage_;
-        std::mutex imgLock_;
-        bool idle_ = true;
-    };
-
+        private:
+            QLabel *imageView_;
+            QTimer* imageRefresher_;
+            cv::Mat lastImage_;
+            std::mutex imgLock_;
+            bool idle_ = true;
+        };
+    }
 }
 
 #endif

@@ -28,15 +28,20 @@
 #include <mico/visualizers/PangolinVisualizer.h>
 
 namespace mico{
-
+    namespace visualizer{
+    
+        /// Mico block for visualizing 3D scenes using pangolin visualizer.
+        /// @ingroup  mico_visualizer
         class BlockSceneVisualizerPangolin: public flow::Block {
         public:
-            virtual std::string name() const override {return "Pangolin Scene Visualizer";}
+            /// Get name of block
+        virtual std::string name() const override {return "Pangolin Scene Visualizer";}
 
             BlockSceneVisualizerPangolin();
             ~BlockSceneVisualizerPangolin();
 
-            virtual QWidget * customWidget() override;
+            virtual /// Get custom view widget to be display in the graph
+        QWidget * customWidget() override;
 
         private:
             Eigen::Vector3f lastPosition_;
@@ -45,10 +50,7 @@ namespace mico{
             PangolinVisualizer *visualizer_ = nullptr;
 
         };
-
-    
-
-
+}
 
 }
 

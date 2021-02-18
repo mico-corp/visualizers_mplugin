@@ -27,30 +27,35 @@
 class QLabel;
 class QTimer;
 
-namespace mico
-{
+namespace mico {
+    
+    namespace visualizer{
+    
+    /// Mico block for visualizing streams of numbers.
+    /// @ingroup  mico_visualizer
+        class BlockNumberVisualizer : public flow::Block {
+        public:
+            /// Get name of block
+            virtual std::string name() const override { return "Number Visualizer"; }
 
-    class BlockNumberVisualizer : public flow::Block
-    {
-    public:
-        virtual std::string name() const override { return "Number Visualizer"; }
+            BlockNumberVisualizer();
+            ~BlockNumberVisualizer();
 
-        BlockNumberVisualizer();
-        ~BlockNumberVisualizer();
-
-        std::string description() const override { return "Simple number visualizer block.        \n"
-                                                          "   - Inputs: Number to be displayed    \n"; };
+            /// Returns a brief description of the block
+            std::string description() const override { return "Simple number visualizer block.        \n"
+                                                            "   - Inputs: Number to be displayed    \n"; };
 
 
-        QWidget * customWidget();
+            /// Get custom view widget to be display in the graph
+            QWidget * customWidget();
 
-    private:
-        float number_ = 0;
+        private:
+            float number_ = 0;
 
-        QLabel *textDisplay_;
-        QTimer *refreshTimer_;
-    };
-
+            QLabel *textDisplay_;
+            QTimer *refreshTimer_;
+        };
+    }
 } // namespace mico
 
 #endif

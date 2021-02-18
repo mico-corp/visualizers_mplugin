@@ -29,35 +29,35 @@
 #include <QTimer>
 
 namespace mico{
+    namespace visualizer{
+        BlockNumberVisualizer::BlockNumberVisualizer(){
+            textDisplay_ = new QLabel("0.000000");
 
-    BlockNumberVisualizer::BlockNumberVisualizer(){
-        textDisplay_ = new QLabel("0.000000");
+            createPolicy({  flow::makeInput<float>("Number")});
 
-        createPolicy({  flow::makeInput<float>("Number")});
+            registerCallback({"Number"}, 
+                                    [&](flow::DataFlow  _data){
+                                        number_ = _data.get<float>("Number");
+                                        // textDisplay_->setText(std::to_string(number_).c_str());
+                                    }
+                                );
 
-        registerCallback({"Number"}, 
-                                [&](flow::DataFlow  _data){
-                                    number_ = _data.get<float>("Number");
-                                    // textDisplay_->setText(std::to_string(number_).c_str());
-                                }
-                            );
+            refreshTimer_ = new QTimer();
+            QObject::connect(refreshTimer_, &QTimer::timeout, [&](){
+                textDisplay_->setText(std::to_string(number_).c_str());
+            });
+            refreshTimer_->start(30);
+        }
 
-        refreshTimer_ = new QTimer();
-        QObject::connect(refreshTimer_, &QTimer::timeout, [&](){
-            textDisplay_->setText(std::to_string(number_).c_str());
-        });
-        refreshTimer_->start(30);
+
+        QWidget * BlockNumberVisualizer::customWidget(){
+            return textDisplay_;
+        }
+
+        BlockNumberVisualizer::~BlockNumberVisualizer(){
+            refreshTimer_->stop();
+            delete refreshTimer_;
+            delete textDisplay_;
+        }
     }
-
-
-    QWidget * BlockNumberVisualizer::customWidget(){
-        return textDisplay_;
-    }
-
-    BlockNumberVisualizer::~BlockNumberVisualizer(){
-        refreshTimer_->stop();
-        delete refreshTimer_;
-        delete textDisplay_;
-    }
-
 }

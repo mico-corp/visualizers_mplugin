@@ -33,51 +33,57 @@
 #include <mico/visualizers/SceneVisualizer.h>
 
 namespace mico{
-    class BlockSceneVisualizer: public flow::Block{
-    public:
-        virtual std::string name() const override { return "Scene Visualizer"; }
+        namespace visualizer{
+    
+        /// Mico block for visualizing 3D scenes, implemented using VTK PCL visualizer.
+        /// @ingroup  mico_visualizer
+        class BlockSceneVisualizer: public flow::Block{
+        public:
+            /// Get name of block
+            virtual std::string name() const override { return "Scene Visualizer"; }
 
-        BlockSceneVisualizer();
-        ~BlockSceneVisualizer();
-
-
-
-    bool configure(std::vector<flow::ConfigParameterDef> _params) override;
-    std::vector<flow::ConfigParameterDef> parameters() override;
-
-
-    private:
-        SceneVisualizer<pcl::PointXYZRGBNormal> sceneVisualizer_;
-
-        void init();
-
-    private:
-        static bool sAlreadyExisting_;
-        bool sBelonger_;
-
-        std::thread spinnerThread_;
-        bool run_ = true;
-        bool idle_ = true;
-        bool hasBeenInitialized_ = false;
+            BlockSceneVisualizer();
+            ~BlockSceneVisualizer();
 
 
-        std::deque<Dataframe<pcl::PointXYZRGBNormal>::Ptr> queueDfs_;
-        std::mutex queueDfGuard_;
-        
-#ifdef HAS_MICO_DNN
-        std::deque<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
-        std::mutex queueEntitiesGuard_;
-#endif
-        bool hasPose = false;
-        Eigen::Matrix4f lastPose_;
-        std::mutex poseGuard_;
 
-        // Parameters
-        float voxelSize_ = -1;
-        bool useOctree = false;
-        bool octreeDepth = 4;
-    };
+        bool configure(std::vector<flow::ConfigParameterDef> _params) override;
+        /// Get list of parameters of the block
+            std::vector<flow::ConfigParameterDef> parameters() override;
 
+
+        private:
+            SceneVisualizer<pcl::PointXYZRGBNormal> sceneVisualizer_;
+
+            void init();
+
+        private:
+            static bool sAlreadyExisting_;
+            bool sBelonger_;
+
+            std::thread spinnerThread_;
+            bool run_ = true;
+            bool idle_ = true;
+            bool hasBeenInitialized_ = false;
+
+
+            std::deque<Dataframe<pcl::PointXYZRGBNormal>::Ptr> queueDfs_;
+            std::mutex queueDfGuard_;
+            
+    #ifdef HAS_MICO_DNN
+            std::deque<std::vector<std::shared_ptr<dnn::Entity<pcl::PointXYZRGBNormal>>>> queueEntities_;
+            std::mutex queueEntitiesGuard_;
+    #endif
+            bool hasPose = false;
+            Eigen::Matrix4f lastPose_;
+            std::mutex poseGuard_;
+
+            // Parameters
+            float voxelSize_ = -1;
+            bool useOctree = false;
+            bool octreeDepth = 4;
+        };
+    }
 }
 
 #endif

@@ -39,92 +39,93 @@
 #include <pcl/registration/transforms.h>
 
 namespace mico{
+    namespace visualizer{
+        BlockPointCloudVisualizer::BlockPointCloudVisualizer(): VtkVisualizer3D("Database Visualizer"){
+            createPolicy({  { "Point Cloud", "cloud"}/*, 
+                            {"Dataframe", "dataframe"} */});
 
-    BlockPointCloudVisualizer::BlockPointCloudVisualizer(): VtkVisualizer3D("Database Visualizer"){
-        createPolicy({  { "Point Cloud", "cloud"}/*, 
-                        {"Dataframe", "dataframe"} */});
-
-        registerCallback({"Point Cloud" }, 
-                                [&](flow::DataFlow  _data){
-                                    if(idle_){
-                                        idle_ = false;
-                                        auto cloud = _data.get<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr>("Point Cloud"); 
-                                        updateRender(cloud);
-                                        runOnUiThread([&](){
-                                            if(actor && actor != prevActor){
-                                                actorGuard_.lock();
-                                                if(prevActor){
-                                                    renderer->RemoveActor(prevActor);
+            registerCallback({"Point Cloud" }, 
+                                    [&](flow::DataFlow  _data){
+                                        if(idle_){
+                                            idle_ = false;
+                                            auto cloud = _data.get<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr>("Point Cloud"); 
+                                            updateRender(cloud);
+                                            runOnUiThread([&](){
+                                                if(actor && actor != prevActor){
+                                                    actorGuard_.lock();
+                                                    if(prevActor){
+                                                        renderer->RemoveActor(prevActor);
+                                                    }
+                                                    prevActor = actor;
+                                                    actorGuard_.unlock();
+                                                    renderer->AddActor(actor);
                                                 }
-                                                prevActor = actor;
-                                                actorGuard_.unlock();
-                                                renderer->AddActor(actor);
-                                            }
-                                        });
-                                        idle_ = true;
+                                            });
+                                            idle_ = true;
+                                        }
                                     }
-                                }
-                            );
-        /*
-        registerCallback({"Dataframe" }, 
-                                [&](flow::DataFlow  _data){
-                                    if(idle_){
-                                        idle_ = false;
-                                        auto cloud = pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr(new pcl::PointCloud<pcl::PointXYZRGBNormal>());
-                                        auto df = _data.get<std::shared_ptr<mico::Dataframe<pcl::PointXYZRGBNormal>>>("Dataframe");
-                                        pcl::transformPointCloud(*df->cloud(), *cloud, df->pose());
-                                        updateRender(cloud);
-                                        runOnUiThread([&](){
-                                            if(actor && actor != prevActor){
-                                                actorGuard_.lock();
-                                                if(prevActor){
-                                                    renderer->RemoveActor(prevActor);
+                                );
+            /*
+            registerCallback({"Dataframe" }, 
+                                    [&](flow::DataFlow  _data){
+                                        if(idle_){
+                                            idle_ = false;
+                                            auto cloud = pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr(new pcl::PointCloud<pcl::PointXYZRGBNormal>());
+                                            auto df = _data.get<std::shared_ptr<mico::Dataframe<pcl::PointXYZRGBNormal>>>("Dataframe");
+                                            pcl::transformPointCloud(*df->cloud(), *cloud, df->pose());
+                                            updateRender(cloud);
+                                            runOnUiThread([&](){
+                                                if(actor && actor != prevActor){
+                                                    actorGuard_.lock();
+                                                    if(prevActor){
+                                                        renderer->RemoveActor(prevActor);
+                                                    }
+                                                    prevActor = actor;
+                                                    actorGuard_.unlock();
+                                                    renderer->AddActor(actor);
                                                 }
-                                                prevActor = actor;
-                                                actorGuard_.unlock();
-                                                renderer->AddActor(actor);
-                                            }
-                                        });
-                                        idle_ = true;
+                                            });
+                                            idle_ = true;
+                                        }
                                     }
-                                }
-                            );*/
-    }
-
-
-    BlockPointCloudVisualizer::~BlockPointCloudVisualizer(){
-        
-    }
-
-
-    void BlockPointCloudVisualizer::updateRender(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr _cloud){
-        vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colors->SetNumberOfComponents(3);
-        colors->SetName ("Colors");
-        for(auto &p: *_cloud){
-            points->InsertNextPoint (p.x, p.y, p.z);
-            colors->InsertNextTuple3(p.r, p.g, p.b);
+                                );*/
         }
 
-        vtkSmartPointer<vtkPolyData> pointsPolydata = vtkSmartPointer<vtkPolyData>::New();
-        pointsPolydata->SetPoints(points);
-        vtkSmartPointer<vtkVertexGlyphFilter> vertexFilter = vtkSmartPointer<vtkVertexGlyphFilter>::New();
-        vertexFilter->SetInputData(pointsPolydata);
-        vertexFilter->Update();
-        vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-        polydata->ShallowCopy(vertexFilter->GetOutput());
-        polydata->GetPointData()->SetScalars(colors);
 
-        // Visualization
-        vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        mapper->SetInputData(polydata);
+        BlockPointCloudVisualizer::~BlockPointCloudVisualizer(){
+            
+        }
 
-        actorGuard_.lock();
-        actor = vtkSmartPointer<vtkActor>::New();
-        actor->SetMapper(mapper);
-        actor->GetProperty()->SetPointSize(5);
-        actorGuard_.unlock();
+
+        void BlockPointCloudVisualizer::updateRender(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr _cloud){
+            vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+            vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+            colors->SetNumberOfComponents(3);
+            colors->SetName ("Colors");
+            for(auto &p: *_cloud){
+                points->InsertNextPoint (p.x, p.y, p.z);
+                colors->InsertNextTuple3(p.r, p.g, p.b);
+            }
+
+            vtkSmartPointer<vtkPolyData> pointsPolydata = vtkSmartPointer<vtkPolyData>::New();
+            pointsPolydata->SetPoints(points);
+            vtkSmartPointer<vtkVertexGlyphFilter> vertexFilter = vtkSmartPointer<vtkVertexGlyphFilter>::New();
+            vertexFilter->SetInputData(pointsPolydata);
+            vertexFilter->Update();
+            vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+            polydata->ShallowCopy(vertexFilter->GetOutput());
+            polydata->GetPointData()->SetScalars(colors);
+
+            // Visualization
+            vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+            mapper->SetInputData(polydata);
+
+            actorGuard_.lock();
+            actor = vtkSmartPointer<vtkActor>::New();
+            actor->SetMapper(mapper);
+            actor->GetProperty()->SetPointSize(5);
+            actorGuard_.unlock();
+        }
     }
 }
 

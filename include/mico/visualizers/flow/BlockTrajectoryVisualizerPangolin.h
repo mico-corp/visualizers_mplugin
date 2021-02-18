@@ -29,15 +29,23 @@
 #include <QSpinBox>
 
 namespace mico{
-
+    namespace visualizer{
+    
+        /// Mico block for visualizing 3d trayectories using VTK pcl visualizer.
+        /// @ingroup  mico_visualizer
         class BlockTrajectoryVisualizerPangolin: public flow::Block {
         public:
+            /// Get name of block
             virtual std::string name() const override {return "Pangolin Trajectory Visualizer";}
 
+            /// Base constructor
             BlockTrajectoryVisualizerPangolin();
+
+            /// Base destructor
             ~BlockTrajectoryVisualizerPangolin();
 
-            virtual QWidget * customWidget() override;
+            virtual /// Get custom view widget to be display in the graph
+        QWidget * customWidget() override;
             virtual QBoxLayout * creationWidget() override;
 
         private:
@@ -62,10 +70,7 @@ namespace mico{
             PangolinVisualizer *visualizer_ = nullptr;
 
         };
-
-    
-
-
+    }
 
 }
 
